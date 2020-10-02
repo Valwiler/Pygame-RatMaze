@@ -11,12 +11,12 @@ POSX_CHEESE = 800
 POSY_CHEESE = 400
 POS_ZOMBIES = [[200,160],[400,360],[600,560]]
 
-J = (255,255,0)
-R = (255,0,0)
-G = (0,255,0)
-B = (0,0,255)
-N = (0,0,0)
-C_FEN = N
+Jaune = (255,255,0)
+Rouge = (255,0,0)
+Vert = (0,255,0)
+Bleu = (0,0,255)
+Noir = (0,0,0)
+Blanc = (255,255,255)
 
 MVT = 10
 FR = 60
@@ -31,12 +31,13 @@ class Jeu():
     def __init__(self, lf, hf, lr, hr):
         self.lf, self.hf = lf, hf
         self.lr, self.hr = lr, hr
-        
-        self.joueur = Acteur(POSX_PLAYER, POSY_PLAYER, B)
-        self.fromage = Acteur(POSX_CHEESE, POSY_CHEESE, J)
-        self.zombie1 = Acteur(POS_ZOMBIES[0][0],POS_ZOMBIES[0][1], R)
-        self.zombie2 = Acteur(POS_ZOMBIES[1][0],POS_ZOMBIES[1][1], R)
-        self.zombie3 = Acteur(POS_ZOMBIES[2][0],POS_ZOMBIES[2][1], R)
+        self.couleur = Noir
+
+        self.joueur = Acteur(POSX_PLAYER, POSY_PLAYER, Bleu)
+        self.fromage = Acteur(POSX_CHEESE, POSY_CHEESE, Jaune)
+        self.zombie1 = Acteur(POS_ZOMBIES[0][0],POS_ZOMBIES[0][1], Vert)
+        self.zombie2 = Acteur(POS_ZOMBIES[1][0],POS_ZOMBIES[1][1], Vert)
+        self.zombie3 = Acteur(POS_ZOMBIES[2][0],POS_ZOMBIES[2][1], Vert)
         
         self.fenetre = pygame.display.set_mode((self.lf, self.hf))
         
@@ -69,7 +70,7 @@ class Jeu():
         pass
         
     def rendre(self):
-        self.fenetre.fill(C_FEN)
+        self.fenetre.fill(self.couleur)
 
         #JOUEUR
         pygame.draw.rect(self.fenetre,self.joueur.couleur,(self.joueur.posx, self.joueur.posy, self.lr, self.hr))
@@ -85,6 +86,7 @@ class Jeu():
 
 def main():
     pygame.init()
+    pygame.display.set_caption('Laborat')
     jeu = Jeu(LFEN, HFEN, LRECT, HRECT)
     jeu.executer()
     pygame.quit()
