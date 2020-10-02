@@ -9,13 +9,14 @@ POSX_PLAYER = 12
 POSY_PLAYER = 12
 POSX_CHEESE = 800
 POSY_CHEESE = 400
-ZOMBIES = [(200,160),(400,360),(600,560)]
+POS_ZOMBIES = [[200,160],[400,360],[600,560]]
 
 J = (255,255,0)
 R = (255,0,0)
 G = (0,255,0)
 B = (0,0,255)
 N = (0,0,0)
+C_FEN = N
 
 MVT = 10
 FR = 60
@@ -27,12 +28,15 @@ class Acteur():
         self.alive = True
 
 class Jeu():
-    def __init__(self, lf, hf, lr, hr, couleur):
+    def __init__(self, lf, hf, lr, hr):
         self.lf, self.hf = lf, hf
         self.lr, self.hr = lr, hr
         
         self.joueur = Acteur(POSX_PLAYER, POSY_PLAYER, B)
         self.fromage = Acteur(POSX_CHEESE, POSY_CHEESE, J)
+        self.zombie1 = Acteur(POS_ZOMBIES[0][0],POS_ZOMBIES[0][1], R)
+        self.zombie2 = Acteur(POS_ZOMBIES[1][0],POS_ZOMBIES[1][1], R)
+        self.zombie3 = Acteur(POS_ZOMBIES[2][0],POS_ZOMBIES[2][1], R)
         
         self.fenetre = pygame.display.set_mode((self.lf, self.hf))
         
@@ -65,18 +69,23 @@ class Jeu():
         pass
         
     def rendre(self):
-        self.fenetre.fill(N)
+        self.fenetre.fill(C_FEN)
+
         #JOUEUR
         pygame.draw.rect(self.fenetre,self.joueur.couleur,(self.joueur.posx, self.joueur.posy, self.lr, self.hr))
         #FROMAGE
         pygame.draw.rect(self.fenetre,self.fromage.couleur,(self.fromage.posx, self.fromage.posy, self.lr, self.hr))
+        #ZOMBIES
+        pygame.draw.rect(self.fenetre,self.zombie1.couleur,(self.zombie1.posx, self.zombie1.posy, self.lr, self.hr))
+        pygame.draw.rect(self.fenetre,self.zombie2.couleur,(self.zombie2.posx, self.zombie2.posy, self.lr, self.hr))
+        pygame.draw.rect(self.fenetre,self.zombie3.couleur,(self.zombie3.posx, self.zombie3.posy, self.lr, self.hr))
 
         pygame.display.update()
 
 
 def main():
     pygame.init()
-    jeu = Jeu(LFEN, HFEN, LRECT, HRECT, B)
+    jeu = Jeu(LFEN, HFEN, LRECT, HRECT)
     jeu.executer()
     pygame.quit()
     
