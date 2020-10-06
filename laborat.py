@@ -57,7 +57,10 @@ class Jeu():
                 self.en_marche = False
                 break
             elif evenement.type == pygame.KEYDOWN:
-                if evenement.key == pygame.K_RIGHT:
+                if evenement.key == pygame.K_ESCAPE:
+                    self.en_marche = False
+                    break
+                elif evenement.key == pygame.K_RIGHT:
                     self.joueur.posx += MVT
                 elif evenement.key == pygame.K_LEFT:
                     self.joueur.posx -= MVT
