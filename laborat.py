@@ -5,10 +5,8 @@ LFEN = 1024
 HFEN = 640
 LRECT = 64
 HRECT = 64
-POSX_PLAYER = 12
-POSY_PLAYER = 12
-POSX_CHEESE = 800
-POSY_CHEESE = 400
+POS_PLAYER = [12,12]
+POS_CHEESE = [800,400]
 POS_ZOMBIES = [[200,160],[400,360],[600,560]]
 
 Jaune = (255,255,0)
@@ -33,8 +31,8 @@ class Jeu():
         self.lr, self.hr = lr, hr
         self.couleur = Noir
 
-        self.joueur = Acteur(POSX_PLAYER, POSY_PLAYER, Bleu)
-        self.fromage = Acteur(POSX_CHEESE, POSY_CHEESE, Jaune)
+        self.joueur = Acteur(POS_PLAYER[0], POS_PLAYER[1], Bleu)
+        self.fromage = Acteur(POS_CHEESE[0], POS_CHEESE[1], Jaune)
         self.zombie1 = Acteur(POS_ZOMBIES[0][0],POS_ZOMBIES[0][1], Vert)
         self.zombie2 = Acteur(POS_ZOMBIES[1][0],POS_ZOMBIES[1][1], Vert)
         self.zombie3 = Acteur(POS_ZOMBIES[2][0],POS_ZOMBIES[2][1], Vert)
