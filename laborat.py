@@ -19,13 +19,13 @@ Blanc = (255,255,255)
 MVT = 10
 FR = 60
 
-class Acteur():
+class Acteur(): #TODO extends sprite, create zombie/fromage/player child, implement ActeursFactory, Move models to seperate script
     def __init__(self, posx, posy, couleur):
         self.posx, self.posy = posx, posy
         self.couleur = couleur
         self.alive = True
-
-class Jeu():
+        
+class Jeu(): #TODO Make observer of player status (sprite maybe has a method? make own implementation of push observation?), convert to singleton patern, move to seperate script
     def __init__(self, lf, hf, lr, hr):
         self.lf, self.hf = lf, hf
         self.lr, self.hr = lr, hr
@@ -49,7 +49,7 @@ class Jeu():
             self.rendre()
             self.horloge.tick(FR)
             
-    def traiter_donnees(self):
+    def traiter_donnees(self): #Move to controler script
         for evenement in pygame.event.get():
             if evenement.type == pygame.QUIT:
                 self.en_marche = False
@@ -70,7 +70,7 @@ class Jeu():
     def actualiser(self):
         pass
         
-    def rendre(self):
+    def rendre(self): #move to view script
         self.fenetre.fill(self.couleur)
 
         #JOUEUR
