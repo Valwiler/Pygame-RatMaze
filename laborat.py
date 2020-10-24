@@ -1,20 +1,14 @@
 from sys import exit
 import pygame
+from model import jeu as j
 
 LFEN = 1024
 HFEN = 640
 LRECT = 64
 HRECT = 64
-POS_PLAYER = [12,12]
-POS_CHEESE = [800,400]
-POS_ZOMBIES = [[200,160],[400,360],[600,560]]
-
-Jaune = (255,255,0)
-Rouge = (255,0,0)
-Vert = (0,255,0)
-Bleu = (0,0,255)
-Noir = (0,0,0)
-Blanc = (255,255,255)
+POS_PLAYER = [12, 12]
+POS_CHEESE = [800, 400]
+POS_ZOMBIES = [[200, 160], [400, 360], [600, 560]]
 
 MVT = 10
 FR = 60
@@ -24,23 +18,7 @@ class Acteur(): #TODO extends sprite, create zombie/fromage/player child, implem
         self.posx, self.posy = posx, posy
         self.couleur = couleur
         self.alive = True
-        
-class Jeu(): #TODO Make observer of player status (sprite maybe has a method? make own implementation of push observation?), convert to singleton patern, move to seperate script
-    def __init__(self, lf, hf, lr, hr):
-        self.lf, self.hf = lf, hf
-        self.lr, self.hr = lr, hr
-        self.couleur = Noir
 
-        self.joueur = Acteur(POS_PLAYER[0], POS_PLAYER[1], Bleu)
-        self.fromage = Acteur(POS_CHEESE[0], POS_CHEESE[1], Jaune)
-        self.zombie1 = Acteur(POS_ZOMBIES[0][0],POS_ZOMBIES[0][1], Vert)
-        self.zombie2 = Acteur(POS_ZOMBIES[1][0],POS_ZOMBIES[1][1], Vert)
-        self.zombie3 = Acteur(POS_ZOMBIES[2][0],POS_ZOMBIES[2][1], Vert)
-        
-        self.fenetre = pygame.display.set_mode((self.lf, self.hf))
-        
-        self.en_marche = True
-        self.horloge = pygame.time.Clock()
         
     def executer(self):
         while self.en_marche:
@@ -74,7 +52,7 @@ class Jeu(): #TODO Make observer of player status (sprite maybe has a method? ma
         self.fenetre.fill(self.couleur)
 
         #JOUEUR
-        pygame.draw.rect(self.fenetre,self.joueur.couleur,(self.joueur.posx, self.joueur.posy, self.lr, self.hr))
+        pygame.draw.rect(self.fenetre, self.joueur.couleur, (self.joueur.posx, self.joueur.posy, self.lr, self.hr))
         #FROMAGE
         pygame.draw.rect(self.fenetre,self.fromage.couleur,(self.fromage.posx, self.fromage.posy, self.lr, self.hr))
         #ZOMBIES
@@ -88,7 +66,7 @@ class Jeu(): #TODO Make observer of player status (sprite maybe has a method? ma
 def main():
     pygame.init()
     pygame.display.set_caption('Laborat')
-    jeu = Jeu(LFEN, HFEN, LRECT, HRECT)
+    jeu = j.Jeu(LFEN, HFEN, LRECT, HRECT)
     jeu.executer()
     pygame.quit()
     
