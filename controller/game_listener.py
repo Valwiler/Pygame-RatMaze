@@ -7,42 +7,42 @@ import time
 class GameListener():
 
 
-    def __init__(self, laborat, SCREEN_WIDTH, SCREEN_HEIGHT, MVT):
-        self.laborat = laborat
-        self.scren_w = SCREEN_WIDTH
-        self.screen_h = SCREEN_HEIGHT
-        self.mvt = MVT
+    def __init__(self):
+        self.pressed_up = False
+
+        self.pressed_down = False
+
+        self.pressed_left = False
+
+        self.pressed_right = False
+
 
 
     def get_input(self):
 
-        #pressed_up = False
-        #pressed_down = False
-        #pressed_left = False
-        #pressed_right = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
             elif event.type == pygame.KEYDOWN:  # check for key presses
                 if event.key == pygame.K_LEFT:  # left arrow turns left
-                    pressed_left = True
+                    self.pressed_left = True
                 elif event.key == pygame.K_RIGHT:  # right arrow turns right
-                    pressed_right = True
+                    self.pressed_right = True
                 elif event.key == pygame.K_UP:  # up arrow goes up
-                    pressed_up = True
+                    self.pressed_up = True
                 elif event.key == pygame.K_DOWN:  # down arrow goes down
-                    pressed_down = True
+                    self.pressed_down = True
             elif event.type == pygame.KEYUP:  # check for key releases
                 if event.key == pygame.K_LEFT:  # left arrow turns left
-                    pressed_left = False
+                    self.pressed_left = False
                 elif event.key == pygame.K_RIGHT:  # right arrow turns right
-                    pressed_right = False
+                    self.pressed_right = False
                 elif event.key == pygame.K_UP:  # up arrow goes up
-                    pressed_up = False
+                    self.pressed_up = False
                 elif event.key == pygame.K_DOWN:  # down arrow goes down
-                    pressed_down = False
-        return pressed_up,pressed_down,pressed_left,pressed_right
+                    self.pressed_down = False
+        return self.pressed_up,self.pressed_down,self.pressed_left,self.pressed_right
 
         # In your game loop, check for key states:
 

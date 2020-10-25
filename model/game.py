@@ -23,7 +23,7 @@ class Game:
             cls.actor_factory = af.Actor_Factory(NUMBER_OF_ACTORS)
             cls.player = cls.actor_factory.get_actor(0)
             cls.window = w.Window(SCREEN_WIDTH, SCREEN_HEIGHT, cls.actor_factory)
-            cls.game_listener = gl.GameListener(cls.actor_factory.get_actor(0), SCREEN_WIDTH, SCREEN_HEIGHT, MVT)
+            cls.game_listener = gl.GameListener()
             cls.running = True
             cls.clock = pygame.time.Clock()
         return cls.__instance
