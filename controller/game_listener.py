@@ -7,16 +7,17 @@ class GameListener():
         self.game = game
 
     def get_input(self):
-        while self.game.running:
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_ESCAPE]:
+        for evenement in pygame.event.get():
+            #INPUT
+            if evenement.type == pygame.QUIT:
                 self.game.running = False
                 break
-            if keys[pygame.K_UP]:
-                self.game.player.posy -= self.game.MVT
-            if keys[pygame.K_DOWN]:
-                self.game.player.posy += self.game.MVT
-            if keys[pygame.K_LEFT]:
-                self.game.player.posx -= self.game.MVT
-            if keys[pygame.K_RIGHT]:
-                self.game.player.posx += self.game.MVT
+            elif evenement.type == pygame.KEYDOWN:
+                if evenement.key == pygame.K_RIGHT:
+                    self.game.player.position[0] += self.game.MVT
+                elif evenement.key == pygame.K_LEFT:
+                    self.game.player.position[0] -= self.game.MVT
+                elif evenement.key == pygame.K_DOWN:
+                    self.game.player.position[1] += self.game.MVT
+                elif evenement.key == pygame.K_UP:
+                    self.game.player.position[1] -= self.game.MVT
