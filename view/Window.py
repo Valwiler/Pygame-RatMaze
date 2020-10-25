@@ -12,6 +12,7 @@ class Window:
     def update_icons(self, act_factory):
         self.ecran.fill((0, 0, 0))
         for icons in act_factory:
+            if icons
             color, rect = i.IconesActeurs(icons, 64).getIcon()
             pg.draw.rect(self.ecran, color, rect)
         pg.display.update()

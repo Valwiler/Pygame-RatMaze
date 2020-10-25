@@ -31,4 +31,5 @@ class Game:
         while self.running:
             self.window.update_icons(self.actor_factory.get_actors())
             self.game_listener.get_input()
+            self.window.
             self.clock.tick(FR)
