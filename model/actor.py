@@ -16,6 +16,9 @@ class Actor():
     def get_position(self):
         return self.position
 
+    def get_alive(self):
+        return self.is_alive
+
 
 class Player(Actor):
     def __init__(self, coordinate):
