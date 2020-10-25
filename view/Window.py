@@ -14,4 +14,4 @@ class Window:
         for icons in act_factory:
             color, rect = i.IconesActeurs(icons, 64).getIcon()
             pg.draw.rect(self.ecran, color, rect)
-            pg.display.update()
+        pg.display.update()

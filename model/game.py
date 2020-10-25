@@ -7,7 +7,7 @@ import view.Window as w
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 640
 MVT = 10
-FR = 10
+FR = 60
 
 NUMBER_OF_ACTORS = 5
 LABORAT_ID = 0
@@ -17,7 +17,7 @@ class Game:
 
     def __new__(cls):
         if cls.__instance is None:
-            print('creating new game instace')
+            print('creating new game instance')
             cls.__instance = super(Game, cls).__new__(cls)
             cls.actor_factory = af.Actor_Factory(NUMBER_OF_ACTORS)
             print(cls.actor_factory)
