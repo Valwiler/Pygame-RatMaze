@@ -35,7 +35,6 @@ class Window:
                             rect = text.get_rect()
                             rect.center =  self.center
                             self.ecran.blit(text, rect)
-                            print('game over')
                         elif isinstance(other_object, a.Fromage):
                             self.background_color = WHITE
                             other_object.set_alive(False)
@@ -44,7 +43,6 @@ class Window:
                             rect = text.get_rect()
                             rect.center = self.center
                             self.ecran.blit(text, rect)
-                            print('Yay, you won !!!')
                         else:
                             pass
             color, rect = i.Actor_Icon(actor, self.actors_icons_size).get_icon()
