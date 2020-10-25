@@ -12,9 +12,9 @@ WHITE = (255, 255, 255)
 class Window:
 
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, actors):
         self.ecran = pg.display.set_mode((width, height))
-
+        self.actors = actors
         self.game_over = 0
         self.background_color = (0, 0, 0)
         self.font = pg.font.Font(pg.font.get_default_font(), 32)
@@ -28,12 +28,13 @@ class Window:
         
 
 
-    def update_icons(self, act_factory):
+    def update_icons(self):
 
         self.ecran.fill(self.background_color)
-        for icons in act_factory:
+        actf = self.actors.get_actors()
+        for icons in actf:
             if  isinstance(icons, a.Player):
-                for icone2 in act_factory:
+                for icone2 in actf:
                     if i.IconesActeurs(icons, 64).isinCollision(i.IconesActeurs(icone2, 64)):
                         if isinstance(icone2, a.Zombie):
                             self.background_color = RED

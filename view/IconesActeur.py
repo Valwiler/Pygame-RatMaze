@@ -19,5 +19,5 @@ class IconesActeurs(pygame.sprite.Sprite):
         return act_fact.isAlive
 
     def isinCollision(self, object):
-        print(pg.sprite.collide_rect(self,object))
+        #print(pg.sprite.collide_rect(self,object))
         return pg.sprite.collide_rect(self,object)
