@@ -16,12 +16,8 @@ class Window:
         self.actors_icons_size = actors_icons_size
         self.background_color = BLACK
         self.font = pg.font.Font(pg.font.get_default_font(), 32)
-        self.text1 = self.font.render('Victoire', True, BLACK, WHITE)
-        self.text2 = self.font.render("Défaite", True, BLACK, RED)
-        self.trect1 = self.text1.get_rect()
-        self.trect2 = self.text2.get_rect()
-        self.trect1.center = (width // 2, height // 2)
-        self.trect2.center = (width // 2, height // 2)
+        self.center = (width // 2, height // 2)
+
 
     def update_icons(self):
 
@@ -35,13 +31,19 @@ class Window:
                             self.background_color = RED
                             actor.set_alive(False)
                             self.game_over = True
-                            self.ecran.blit(self.text2, self.trect2)
+                            text = self.font.render('Victoire', True, BLACK, self.background_color)
+                            rect = text.get_rect()
+                            rect.center =  self.center
+                            self.ecran.blit(text, rect)
                             print('game over')
                         elif isinstance(other_object, a.Fromage):
                             self.background_color = WHITE
                             other_object.set_alive(False)
                             self.game_over = True
-                            self.ecran.blit(self.text1, self.trect1)
+                            text = self.font.render('Défaite', True, BLACK, self.background_color)
+                            rect = text.get_rect()
+                            rect.center = self.center
+                            self.ecran.blit(text, rect)
                             print('Yay, you won !!!')
                         else:
                             pass
