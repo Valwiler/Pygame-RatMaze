@@ -15,11 +15,12 @@ class GameListener():
 
 
     def get_input(self):
-       # Window.update_icons()
-        pressed_up = False
-        pressed_down = False
-        pressed_left = False
-        pressed_right = False
+
+        #pressed_up = False
+        #pressed_down = False
+        #pressed_left = False
+        #pressed_right = False
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -45,7 +46,7 @@ class GameListener():
 
         # In your game loop, check for key states:
 
-        Window.update_icons()
+
 
         #for events in pygame.event.get():
         #    Window.update_icons()
