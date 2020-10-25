@@ -5,15 +5,12 @@ import view.Window
 import time
 
 
-class GameListener():
+class Game_Listener:
 
     def __init__(self):
         self.pressed_up = False
-
         self.pressed_down = False
-
         self.pressed_left = False
-
         self.pressed_right = False
 
     def get_input(self):

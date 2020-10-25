@@ -1,7 +1,7 @@
 import pygame
 
 
-class Actor():
+class Actor:
     def __init__(self, coordinate):
         self.is_alive = True
         self.position = list(coordinate)
@@ -22,17 +22,17 @@ class Actor():
 
 class Player(Actor):
     def __init__(self, coordinate):
-        super(Player,self).__init__(coordinate)
+        super(Player, self).__init__(coordinate)
         self.color = (0, 0, 255)
 
 
 class Fromage(Actor):
     def __init__(self, coordinate):
-        super(Fromage,self).__init__(coordinate)
+        super(Fromage, self).__init__(coordinate)
         self.color = (255, 255, 0)
 
 
 class Zombie(Actor):
     def __init__(self, coordinate):
-        super(Zombie,self).__init__(coordinate)
+        super(Zombie, self).__init__(coordinate)
         self.color = (0, 255, 0)
