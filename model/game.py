@@ -2,6 +2,7 @@ import pygame
 import model.actor_factory as af
 import controller.game_listener as gl
 import view.Window as w
+import time
 
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 640
@@ -27,8 +28,12 @@ class Game:
         return cls.__instance
 
     def run(self):
-        while self.running:
+        while self.running and self.window.game_over == 0:
             self.window.update_icons(self.actor_factory.get_actors())
             self.game_listener.get_input()
-
             self.clock.tick(FR)
+
+
+        self.window.update_icons(self.actor_factory.get_actors())
+        time.sleep(10)
+        pygame.quit()
