@@ -1,9 +1,3 @@
-LFEN = 1024
-HFEN = 640
-LRECT = 64
-HRECT = 64
-MVT = 10
-
 class Actor:
     def __init__(self, sprite, coordinate, color):
         self.is_alive = True
@@ -14,6 +8,8 @@ class Actor:
     def set_alive(self, new_state):
         self.is_alive = new_state
 
-    def set_position(self, coordinate):
-        if (self.position[0] > MVT and self.position[0] < LFEN - (MVT + LRECT)) and (self.position[1] > MVT and self.position[1] < HFEN - (MVT + HRECT)):
-            self.position = coordinate
+    def set_position(self, new_position):
+            self.position = new_position
+
+    def get_position(self):
+        return self.position

@@ -1,18 +1,16 @@
 import pygame
 import model.actor_factory as af
-import model.player as p
+import model.move_validation as mv
 import controller.game_listener as gl
 import view.Window as w
 
-LFEN = 1024
-HFEN = 640
+SCREEN_WIDTH = 1024
+SCREEN_HEIGHT = 640
 MVT = 10
-FR = 60
-
-Noir = (0, 0, 0)
-Blanc = (255, 255, 255)
+FR = 10
 
 NUMBER_OF_ACTORS = 5
+LABORAT_ID = 0
 
 class Game:
     __instance = None
@@ -23,18 +21,14 @@ class Game:
             cls.__instance = super(Game, cls).__new__(cls)
             cls.actor_factory = af.Actor_Factory(NUMBER_OF_ACTORS)
             print(cls.actor_factory)
-            cls.player = p.Player(cls.actor_factory.get_actor(0))
-            print(cls.player.laborat)
-            cls.window = w.Window()
-            cls.game_listener = gl.GameListener(cls.__instance)
+            cls.window = w.Window(SCREEN_WIDTH, SCREEN_HEIGHT)
+            cls.game_listener = gl.GameListener(cls.actor_factory.get_actor(0), SCREEN_WIDTH, SCREEN_HEIGHT, MVT)
             cls.running = True
             cls.clock = pygame.time.Clock()
         return cls.__instance
 
-    def run(cls):
-        while cls.running:
-            cls.actor_factory.create_actors(5)
-            cls.window.update_icons(cls.actor_factory.get_actors())
-            cls.game_listener.get_input()
-
-
+    def run(self):
+        while self.running:
+            self.window.update_icons(self.actor_factory.get_actors())
+            self.game_listener.get_input()
+            self.clock.tick(FR)
