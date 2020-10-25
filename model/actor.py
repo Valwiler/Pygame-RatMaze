@@ -1,5 +1,9 @@
-class Actor:
+import pygame
+
+
+class Actor(pygame.sprite.Sprite):
     def __init__(self, sprite, coordinate, color):
+        pygame.sprite.Sprite.__init__(self)
         self.is_alive = True
         self.sprite = sprite
         self.position = list(coordinate)
@@ -13,3 +17,6 @@ class Actor:
 
     def get_position(self):
         return self.position
+
+    def get_Sprite(self):
+        return self.sprite
