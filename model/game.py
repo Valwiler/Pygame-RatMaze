@@ -34,5 +34,7 @@ class Game:
     def run(cls):
         while cls.running:
             cls.actor_factory.create_actors(5)
+            cls.window.update_icons(cls.actor_factory.get_actors())
             cls.game_listener.get_input()
+
 

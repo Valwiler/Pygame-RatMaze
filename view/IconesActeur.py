@@ -2,11 +2,11 @@ import pygame as pg
 
 class IconesActeurs:
 
-    def __init__(self, ):
+    def __init__(self, actor, size):
         self.sizeofIcon = size
-        self.color = color
-        self.coord1, self.coord2 = coord
-        self.rect = pg.Rect(self.coord1,self.coord2, size, size)
+        self.color = actor.color
+        self.coord1, self.coord2 = actor.position
+        self.rect = pg.Rect(self.coord1,self.coord2, self.sizeofIcon, self.sizeofIcon)
 
     def getIcon(self):
         return self.color, self.rect
