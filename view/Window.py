@@ -6,7 +6,6 @@ RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
-
 class Window:
 
     def __init__(self, width, height, actors_icons_size, actors):
@@ -14,42 +13,30 @@ class Window:
         self.actors = actors
         self.game_over = False
         self.actors_icons_size = actors_icons_size
-        self.background_color = BLACK
         self.font = pg.font.Font(pg.font.get_default_font(), 32)
         self.center = (width // 2, height // 2)
 
     def update_icons(self):
 
-        self.ecran.fill(self.background_color)
+        self.ecran.fill(BLACK)
         for actor in self.actors:
             if isinstance(actor, a.Player):
                 for other_object in self.actors:
                     if i.Actor_Icon(actor, self.actors_icons_size).is_in_collision(
                             i.Actor_Icon(other_object, self.actors_icons_size)):
                         if isinstance(other_object, a.Zombie):
-                            self.lose(actor)
+                            self.end_game(actor, 'Défaite', RED)
                         elif isinstance(other_object, a.Fromage):
-                            self.win(other_object)
-                        else:
-                            pass
+                            self.end_game(other_object, 'Victoire', WHITE)
             color, rect = i.Actor_Icon(actor, self.actors_icons_size).get_icon()
             pg.draw.rect(self.ecran, color, rect)
         pg.display.update()
 
-    def lose(self, actor):
-        self.background_color = RED
-        actor.set_alive(False)
+    def end_game(self, actor_to_kill, message, screen_color):
+        self.ecran.fill(screen_color)
+        actor_to_kill.set_alive(False)
         self.game_over = True
-        text = self.font.render('Défaite', True, BLACK, self.background_color)
-        rect = text.get_rect()
-        rect.center = self.center
-        self.ecran.blit(text, rect)
-
-    def win(self, other_object):
-        self.background_color = WHITE
-        other_object.set_alive(False)
-        self.game_over = True
-        text = self.font.render('Victoire', True, BLACK, self.background_color)
+        text = self.font.render(message, True, BLACK, screen_color)
         rect = text.get_rect()
         rect.center = self.center
         self.ecran.blit(text, rect)
