@@ -1,5 +1,4 @@
-class Acteur:
-
+class Actor:
     def __init__(self, sprite, coordinate, color):
         self.is_alive = True
         self.sprite = sprite
