@@ -4,6 +4,8 @@ import model.player as p
 import controller.game_listener as gl
 import view.Window as w
 
+LFEN = 1024
+HFEN = 640
 MVT = 10
 FR = 60
 
@@ -29,7 +31,8 @@ class Game:
             cls.clock = pygame.time.Clock()
         return cls.__instance
 
-
     def run(cls):
-        while cls.running :
-            keys = pygame.key.get_pressed()
+        while cls.running:
+            cls.actor_factory.create_actors(5)
+            cls.game_listener.get_input()
+
