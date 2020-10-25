@@ -1,6 +1,5 @@
 import pygame
 import model.actor_factory as af
-import model.move_validation as mv
 import controller.game_listener as gl
 import view.Window as w
 

@@ -13,9 +13,6 @@ class Window:
 
 
     def update_icons(self, act_factory):
-       # if acf.act_factory.get_actor(0).get_alive is False:
-            #self.ecran.fill((255,255,255))
-           # pg.display.
         self.ecran.fill(self.background_color)
         for icons in act_factory:
             if  isinstance(icons, a.Player):
@@ -25,9 +22,11 @@ class Window:
                             self.background_color = (255,0,0)
                             icons.set_alive(False)
                             print('game over')
+                            #TODO: arreter deplacement (et afficher YOU LOOSE)
                         elif isinstance(icone2,a.Fromage):
                             self.background_color = (255,255,255)
                             print('Yay, you won !!!')
+                            #TODO: arreter deplacement (et afficher YOU WIN)
                         else:
                             pass
             color, rect = i.IconesActeurs(icons, 64).getIcon()

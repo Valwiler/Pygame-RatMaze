@@ -8,7 +8,6 @@ class IconesActeurs(pygame.sprite.Sprite):
     def __init__(self, actor, size):
         pygame.sprite.Sprite.__init__(self)
         self.sizeofIcon = size
-        #self.sprite = Sprite([actor.position])
         self.color = actor.color
         self.coord1, self.coord2 = actor.position
         self.rect = pg.Rect(self.coord1,self.coord2, self.sizeofIcon, self.sizeofIcon)
