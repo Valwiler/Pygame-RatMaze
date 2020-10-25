@@ -21,9 +21,10 @@ class Actor_Factory:
                 actor_list.append(ac.Actor(None, ACTORS_POSITIONS[i], YELLOW))
             else:
                 actor_list.append(ac.Actor(None, ACTORS_POSITIONS[i], GREEN))
-        for actor in actor_list:
-            print(actor.color)
         return actor_list
 
     def get_actor(self, actor_id):
         return self.actor_list[actor_id]
+
+    def get_actors(self):
+        return self.actor_list

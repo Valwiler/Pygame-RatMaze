@@ -1,6 +1,8 @@
 import pygame
 import model.actor_factory as af
 import model.player as p
+import controller.game_listener as gl
+import view.Window as w
 
 MVT = 10
 FR = 60
@@ -21,5 +23,13 @@ class Game:
             print(cls.actor_factory)
             cls.player = p.Player(cls.actor_factory.get_actor(0))
             print(cls.player.laborat)
-            cls.window = None
+            cls.window = w.Window()
+            cls.game_listener = gl.GameListener(cls.__instance)
+            cls.running = True
+            cls.clock = pygame.time.Clock()
         return cls.__instance
+
+
+    def run(cls):
+        while cls.running :
+            keys = pygame.key.get_pressed()

@@ -1,15 +1,16 @@
 import pygame
 
+
 class GameListener():
-    
-    def __init__(self, jeu):
+
+    def __init__(self, game):
         self.game = game
 
     def get_input(self):
-        while self.game.en_marche:
+        while self.game.running:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_ESCAPE]:
-                self.game.en_marche = False
+                self.game.running = False
                 break
             if keys[pygame.K_UP]:
                 self.game.player.posy -= self.game.MVT

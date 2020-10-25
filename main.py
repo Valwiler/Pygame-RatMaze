@@ -6,7 +6,7 @@ def main():
     pygame.init()
     pygame.display.set_caption('Laborat')
     game = g.Game()
-    game.
+    game.run()
     pygame.quit()
 
 
