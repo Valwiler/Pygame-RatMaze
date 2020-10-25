@@ -19,6 +19,8 @@ class Game_Listener:
             if event.type == pygame.QUIT:
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    sys.exit()
                 if event.key == pygame.K_LEFT:
                     self.pressed_left = True
                 elif event.key == pygame.K_RIGHT:
