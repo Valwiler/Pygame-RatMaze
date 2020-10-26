@@ -1,44 +1,60 @@
 import pygame
+import model.actor_factory as af
+import controller.game_listener as gl
+import view.Window as w
+import time
 
-MVT = 10
-FR = 60
+SCREEN_WIDTH = 1024
+SCREEN_HEIGHT = 640
+ACTORS_ICON_SIZE = 64
+MVT = 1
+FR = 300
 
-Jaune = (255,255,0)
-Rouge = (255,0,0)
-Vert = (0,255,0)
-Bleu = (0,0,255)
-Noir = (0,0,0)
-Blanc = (255,255,255)
+NUMBER_OF_ACTORS = 5
+LABORAT_ID = 0
+
+COORDINATE_X = 0
+COORDINATE_Y = 1
 
 
-class Jeu:
-
+class Game:
     __instance = None
 
-    def __init__(self, lf, hf, lr, hr):
-        raise RuntimeError('Call instance() instead')
+    def __new__(cls):
+        if cls.__instance is None:
+            cls.__instance = super(Game, cls).__new__(cls)
+            cls.actor_factory = af.Actor_Factory(NUMBER_OF_ACTORS)
+            cls.player = cls.actor_factory.get_actor(LABORAT_ID)
+            cls.window = w.Window(SCREEN_WIDTH, SCREEN_HEIGHT, ACTORS_ICON_SIZE, cls.actor_factory.get_actors())
+            cls.game_listener = gl.Game_Listener()
+            cls.running = True
+            cls.clock = pygame.time.Clock()
+        return cls.__instance
 
-    def instance(self, cls):
-        if cls.__instance is not None:
-            return cls.__instance
-        else:
-            self.player
-            self.actor_factory
-            self.player
-            self.window
+    def run(self):
+        while self.running and self.window.game_over is False:
+            self.action_interpreter()
+            self.window.update_icons()
+            self.clock.tick(FR)
 
+        time.sleep(1)
 
-            self.lf, self.hf = lf, hf
-            self.lr, self.hr = lr, hr
-            self.couleur = Noir
+    def position_validation(self, new_position):
+        return (0 < new_position[COORDINATE_X] < SCREEN_WIDTH - ACTORS_ICON_SIZE) and \
+               (0 < new_position[COORDINATE_Y] < SCREEN_HEIGHT - ACTORS_ICON_SIZE)
 
-            self.joueur = Acteur(POS_PLAYER[0], POS_PLAYER[1], Bleu)
-            self.fromage = Acteur(POS_CHEESE[0], POS_CHEESE[1], Jaune)
-            self.zombie1 = Acteur(POS_ZOMBIES[0][0], POS_ZOMBIES[0][1], Vert)
-            self.zombie2 = Acteur(POS_ZOMBIES[1][0], POS_ZOMBIES[1][1], Vert)
-            self.zombie3 = Acteur(POS_ZOMBIES[2][0], POS_ZOMBIES[2][1], Vert)
+    def action_interpreter(self):
+        pressed_up, pressed_down, pressed_left, pressed_right = self.game_listener.get_input()
+        new_position = [self.player.position[COORDINATE_X], self.player.position[COORDINATE_Y]]
+        if pressed_left:
+            new_position[COORDINATE_X] -= MVT
+        if pressed_right:
+            new_position[COORDINATE_X] += MVT
+        if pressed_up:
+            new_position[COORDINATE_Y] -= MVT
+        if pressed_down:
+            new_position[COORDINATE_Y] += MVT
 
-            self.fenetre = pygame.display.set_mode((self.lf, self.hf))
+        if self.position_validation(new_position):
+            self.player.set_position(new_position)
 
-            self.en_marche = True
-            self.horloge = pygame.time.Clock()
