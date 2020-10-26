@@ -1,8 +1,7 @@
 import sys
 
 import pygame
-import view.Window
-import time
+
 
 
 class Game_Listener:

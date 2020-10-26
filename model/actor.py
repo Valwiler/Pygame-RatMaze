@@ -1,6 +1,3 @@
-import pygame
-
-
 class Actor:
     def __init__(self, coordinate):
         self.is_alive = True

@@ -1,6 +1,3 @@
-import pygame
-from pygame.sprite import Sprite
-
 import model.actor as ac
 
 YELLOW = (255, 255, 0)
