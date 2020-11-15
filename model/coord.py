@@ -5,3 +5,9 @@ class Coord:
 
     def get_coord(self):
         return (self.x, self.y)
+
+    def get_x(self):
+        return self.x
+
+    def get_y(self):
+        return self.y
