@@ -22,6 +22,10 @@ class Player(Actor):
         super(Player, self).__init__(coordinate)
         self.color = (0, 0, 255)
 
+class Wall(Actor):
+    def __init__(self, coordinate):
+        super(Wall, self).__init__(coordinate)
+        self.color = (220, 220, 220)
 
 class Fromage(Actor):
     def __init__(self, coordinate):
