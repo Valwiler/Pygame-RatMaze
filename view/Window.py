@@ -6,7 +6,7 @@ from model.etat import Etat as e
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-BLUE = view.IconesActeur.get
+BLUE
 
 class Window:
 
