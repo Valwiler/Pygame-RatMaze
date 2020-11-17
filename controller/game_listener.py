@@ -3,16 +3,11 @@ import sys
 import pygame
 
 
-
 class Game_Listener:
 
-    def __init__(self):
-        self.pressed_up = False
-        self.pressed_down = False
-        self.pressed_left = False
-        self.pressed_right = False
-
-    def get_input(self):
+    def get_input():
+        x_move = 0
+        y_move = 0
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -21,20 +16,14 @@ class Game_Listener:
                 if event.key == pygame.K_ESCAPE:
                     sys.exit()
                 if event.key == pygame.K_LEFT:
-                    self.pressed_left = True
+                    x_move = -1
                 elif event.key == pygame.K_RIGHT:
-                    self.pressed_right = True
+                    x_move = 1
                 elif event.key == pygame.K_UP:
-                    self.pressed_up = True
+                    y_move = -1
                 elif event.key == pygame.K_DOWN:
-                    self.pressed_down = True
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT:
-                    self.pressed_left = False
-                elif event.key == pygame.K_RIGHT:
-                    self.pressed_right = False
-                elif event.key == pygame.K_UP:
-                    self.pressed_up = False
-                elif event.key == pygame.K_DOWN:
-                    self.pressed_down = False
-        return self.pressed_up, self.pressed_down, self.pressed_left, self.pressed_right
+                    y_move = 1
+
+        move = (x_move, y_move)
+        return move
+        #return x_move, y_move
