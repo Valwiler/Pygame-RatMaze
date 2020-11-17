@@ -1,10 +1,9 @@
 import pygame as pg
 
 
-class Actor_Icon(pg.sprite.Sprite):
+class Actor_Icon():
 
     def __init__(self, actor, size):
-        pg.sprite.Sprite.__init__(self)
         self.sizeofIcon = size
         self.color = actor.color
         self.coord1, self.coord2 = actor.position
@@ -12,9 +11,8 @@ class Actor_Icon(pg.sprite.Sprite):
 
     def get_icon(self):
         return self.color, self.rect
-
-    def get_alive(self, act_factory):
-        return act_factory.isAlive
-
+    ##############
+    # DEPRECATED #
+    ##############
     def is_in_collision(self, other_object):
         return pg.sprite.collide_rect(self, other_object)
