@@ -5,7 +5,7 @@ class Actor_Icon():
 
     def __init__(self, actor, size):
         self.sizeofIcon = size
-        self.color = actor.color
+        self.color = actor.type
         self.coord1, self.coord2 = actor.position
         self.rect = pg.Rect(self.coord1, self.coord2, self.sizeofIcon, self.sizeofIcon)
 
