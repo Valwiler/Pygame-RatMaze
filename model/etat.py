@@ -116,11 +116,9 @@ class Etat:
         invalid_positions_dictionarie = {}
         for y in range(-1, HEIGHT, 1):
             invalid_positions_dictionarie[(WIDTH, y)] = False
-            invalid_positions_dictionarie[(y, -1)] = False
             invalid_positions_dictionarie[(-1, y)] = False
         for x in range(-1, WIDTH, 1):
             invalid_positions_dictionarie[(x, -1)] = False
-            invalid_positions_dictionarie[(-1, x)] = False
             invalid_positions_dictionarie[(x, HEIGHT)] = False
 
         for y, row in enumerate(self.grid):
