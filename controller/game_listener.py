@@ -1,11 +1,8 @@
 import sys
-
 import pygame
 
 
-
 class Game_Listener:
-
     def __init__(self):
         self.pressed_up = False
         self.pressed_down = False
@@ -13,7 +10,6 @@ class Game_Listener:
         self.pressed_right = False
 
     def get_input(self):
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
