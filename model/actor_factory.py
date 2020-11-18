@@ -22,10 +22,3 @@ class Actor_Factory:
             return ac.Zombie()
         elif type is CHEESE:
             return ac.Fromage()
-
-
-    def get_zombie(self):
-        pass
-
-    def get_actors(self):
-        return self.actor_list
