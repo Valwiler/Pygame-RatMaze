@@ -1,5 +1,6 @@
 import sys
 import pygame
+import os
 
 
 class Game_Listener:
@@ -16,6 +17,8 @@ class Game_Listener:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     sys.exit()
+                elif event.key == pygame.K_SPACE:
+                    os.execl(sys.executable, '"{}"'.format(sys.executable), *sys.argv)
                 if event.key == pygame.K_LEFT:
                     self.pressed_left = True
                 elif event.key == pygame.K_RIGHT:
