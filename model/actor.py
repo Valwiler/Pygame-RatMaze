@@ -1,12 +1,14 @@
 from model.coord import Coord
 from model.command import Command as command
 import math
+import pygame
 
-
-class Actor:
+class Actor(pygame.sprite.Sprite):
     def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
         self.is_alive = True
         self.type = None
+        self.sprite = None
 
     def set_alive(self, new_state):
         self.is_alive = new_state
@@ -20,11 +22,15 @@ class Actor:
     def update(self, position):
         return command(self, position, position)
 
+    def get_sprite(self):
+        return self.sprite
+
 
 class Player(Actor):
     def __init__(self):
         super(Player, self)
         self.type = 2
+        self.sprite = pygame.transform.scale((pygame.image.load("./sprites/laborat.png")), (64, 64))
 
     def update(self, position, game_listener):
         pressed_up, pressed_down, pressed_left, pressed_right = game_listener.get_input()
@@ -44,6 +50,7 @@ class Zombie(Actor):
     def __init__(self):
         super(Zombie, self)
         self.type = 3
+        self.sprite = pygame.transform.scale((pygame.image.load("./sprites/zombie.png")), (64, 64))
 
     def update(self, position, player_position):
         possible_positions = []
@@ -78,9 +85,17 @@ class Wall(Actor):
     def __init__(self):
         super(Wall, self)
         self.type = 1
+        self.sprite = pygame.transform.scale((pygame.image.load("./sprites/mur_brique.png")), (64, 64))
 
 
 class Fromage(Actor):
     def __init__(self):
         super(Fromage, self)
         self.type = 4
+        self.sprite = pygame.transform.scale((pygame.image.load("./sprites/fromage.png")), (64, 64))
+
+class Tuile_Plancher(Actor):
+    def __init__(self):
+        super(Tuile_Plancher, self)
+        self.type = 0
+        self.sprite = pygame.transform.scale((pygame.image.load("./sprites/texture_pierre.png")), (64, 64))

@@ -1,5 +1,6 @@
 import random as rand
 from model.actor_factory import Actor_Factory as Factory
+import model.actor as Actor
 from model.coord import Coord as coord
 from model.tile import Tile as tile
 
@@ -28,7 +29,10 @@ class Etat:
         self.grid[coordinate.get_y()][coordinate.get_x()].set_actor(actor)
 
     def tile_occupied(self, coordinate):
-        return self.grid[coordinate.get_y()][coordinate.get_x()].get_actor() is not None
+        occupied = False
+        if not isinstance(self.grid[coordinate.get_y()][coordinate.get_x()].get_actor(), Actor.Tuile_Plancher):
+          occupied = True
+        return occupied
 
     def get_tile(self, coordinate):
         return self.grid[coordinate.get_y()][coordinate.get_x()]
@@ -38,7 +42,7 @@ class Etat:
 
     def move_actor(self, coord1, coord2, actor_type):
         self.grid[coord2.get_y()][coord2.get_x()].set_actor(self.grid[coord1.get_y()][coord1.get_x()].get_actor())
-        self.grid[coord1.get_y()][coord1.get_x()].set_actor(None)
+        self.grid[coord1.get_y()][coord1.get_x()].empty_tile()
         self.grid[coord2.get_y()][coord2.get_x()].set_used()
         if actor_type == PLAYER:
             self.player_coordinate = coord2
@@ -84,14 +88,15 @@ class Etat:
         game_map = map_config[rand.randint(0, len(map_config) - 1)]
         for y, row in enumerate(game_map):
             for x, actor_type in enumerate(row):
-                if game_map[y][x] is not NULL:
-                    a_pos = coord(x, y)
-                    self.add_actor(Factory.create_actor(actor_type), a_pos)
-                    if actor_type == PLAYER:
-                        self.player_coordinate = a_pos
+                a_pos = coord(x, y)
+                if actor_type is not NULL :
+                    self.add_actor(Factory.create_actor(NULL), a_pos)
+                self.add_actor(Factory.create_actor(actor_type), a_pos)
+                if actor_type == PLAYER:
+                    self.player_coordinate = a_pos
 
     def execute_command(self, command):
-        if command.actor.type is WALL or command.actor.type is CHEESE:
+        if command.actor.type is WALL or command.actor.type is CHEESE or command.actor.type is NULL:
             return
         for coordinate in command.target_coord:
             key_coordinate = (coordinate.get_x(), coordinate.get_y())
