@@ -30,8 +30,8 @@ class Etat:
 
     def tile_occupied(self, coordinate):
         occupied = False
-        if not isinstance(self.grid[coordinate.get_y()][coordinate.get_x()].get_actor(), Actor.Tuile_Plancher):
-          occupied = True
+        if not isinstance(self.grid[coordinate.get_y()][coordinate.get_x()].get_actor(0), Actor.Tuile_Plancher):
+            occupied = True
         return occupied
 
     def get_tile(self, coordinate):
@@ -41,7 +41,7 @@ class Etat:
         return self.grid[coordinate.get_y()][coordinate.get_x()].get_type()
 
     def move_actor(self, coord1, coord2, actor_type):
-        self.grid[coord2.get_y()][coord2.get_x()].set_actor(self.grid[coord1.get_y()][coord1.get_x()].get_actor())
+        self.grid[coord2.get_y()][coord2.get_x()].set_actor(self.grid[coord1.get_y()][coord1.get_x()].get_actor(0))
         self.grid[coord1.get_y()][coord1.get_x()].empty_tile()
         self.grid[coord2.get_y()][coord2.get_x()].set_used()
         if actor_type == PLAYER:
@@ -55,16 +55,17 @@ class Etat:
             for x, current_tile in enumerate(row):
                 if not current_tile.is_used():
                     if self.tile_occupied(coord(x, y)):
-                        if current_tile.get_actor().get_type() == ZOMBIE:
+                        if current_tile.get_actor(0).get_type() == ZOMBIE:
                             if tick % ZOMBIE_DIFFICULTY == 0:
                                 self.execute_command(
-                                    current_tile.get_actor().update(coord(x, y), self.player_coordinate))
+                                    current_tile.get_actor(0).update(coord(x, y), self.player_coordinate, self.grid,
+                                                                     self.invalid_positions_dictionary))
                             else:
                                 pass
-                        elif current_tile.get_actor().get_type() == PLAYER:
-                            self.execute_command(current_tile.get_actor().update(coord(x, y), game_listener))
+                        elif current_tile.get_actor(0).get_type() == PLAYER:
+                            self.execute_command(current_tile.get_actor(0).update(coord(x, y), game_listener))
                         else:
-                            self.execute_command(current_tile.get_actor().update(coord(x, y)))
+                            self.execute_command(current_tile.get_actor(0).update(coord(x, y)))
         self.reset_tiles()
 
     def reset_tiles(self):
@@ -89,7 +90,7 @@ class Etat:
         for y, row in enumerate(game_map):
             for x, actor_type in enumerate(row):
                 a_pos = coord(x, y)
-                if actor_type is not NULL :
+                if actor_type is not NULL:
                     self.add_actor(Factory.create_actor(NULL), a_pos)
                 self.add_actor(Factory.create_actor(actor_type), a_pos)
                 if actor_type == PLAYER:
@@ -106,14 +107,14 @@ class Etat:
                 self.move_actor(command.start_coord, coordinate, command.actor.type)
                 return
             elif command.actor.type == PLAYER:
-                if self.get_tile(coordinate).get_actor().get_type() is CHEESE:
+                if self.get_tile(coordinate).get_actor(0).get_type() is CHEESE:
                     self.win = True
-                elif self.get_tile(coordinate).get_actor().get_type() is ZOMBIE:
+                elif self.get_tile(coordinate).get_actor(0).get_type() is ZOMBIE:
                     self.loose = True
             elif command.actor.type == ZOMBIE:
-                if self.get_tile(coordinate).get_actor().get_type() is CHEESE:
+                if self.get_tile(coordinate).get_actor(0).get_type() is CHEESE:
                     pass
-                elif self.get_tile(coordinate).get_actor().get_type() is PLAYER:
+                elif self.get_tile(coordinate).get_actor(0).get_type() is PLAYER:
                     self.loose = True
 
     # créer un dictionaire de position invalides
@@ -129,6 +130,6 @@ class Etat:
         for y, row in enumerate(self.grid):
             for x, current_tile in enumerate(row):
                 if self.tile_occupied(coord(x, y)):
-                    if current_tile.get_actor().get_type() == WALL:
+                    if current_tile.get_actor(0).get_type() == WALL:
                         invalid_positions_dictionarie[(x, y)] = False
         return invalid_positions_dictionarie

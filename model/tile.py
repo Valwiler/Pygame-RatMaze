@@ -7,8 +7,8 @@ class Tile:
     def is_used(self):
         return self.used
 
-    def get_actor(self):
-        return self.actors[0]
+    def get_actor(self, index):
+        return self.actors[index]
 
     def set_used(self):
         self.used = True
