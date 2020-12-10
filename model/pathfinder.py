@@ -96,6 +96,7 @@ class Pathfinder:
                         heapq.heappush(open_heap, (tile.h, tile))
                 tile.parent = current_tile
 
+
 # def further_to_player(self, position_focused, next_position, player_position):
 #     objective_x, objective_y = player_position.get_x(), player_position.get_y()
 #     focus_x, focus_y = position_focused.get_x(), position_focused.get_y()
@@ -103,3 +104,4 @@ class Pathfinder:
 #     focused_distance = math.sqrt((focus_x - objective_x) ** 2 + (focus_y - objective_y) ** 2)
 #     compared_distance = math.sqrt((compared_x - objective_x) ** 2 + (compared_y - objective_y) ** 2)
 #     return focused_distance > compared_distance
+
