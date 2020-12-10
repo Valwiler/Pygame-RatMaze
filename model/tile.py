@@ -23,5 +23,8 @@ class Tile:
     def reset(self):
         self.used = False
 
-    def get_coordinate(self):
+    def get_coord_single(self):
         return self.coordinate[0], self.coordinate[1]
+
+    def get_coordinate(self):
+        return self.coordinate
