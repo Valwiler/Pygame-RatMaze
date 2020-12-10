@@ -62,11 +62,13 @@ class Etat:
                         if current_tile.get_actor(0).get_type() == ZOMBIE:
                             if tick % ZOMBIE_DIFFICULTY == 0:
                                 new_coord = self.pathfinder.find_path(coord(x, y),self.player_coordinate)
-                                self.execute_command(Command(current_tile.get_actor(0),coord(x,y),new_coord))
+                                self.execute_command(Command(current_tile.get_actor(0),coord(x,y),[new_coord]))
+                                print(current_tile.get_coordinate().get_srt_coord())
+
                             else:
                                 pass
                         elif current_tile.get_actor(0).get_type() == PLAYER:
-                            self.execute_command(current_tile.get_actor(0).update(coord(x, y), game_listener))
+                            self.execute_command(current_tile.get_actor(0) .update(coord(x, y), game_listener))
                         else:
                             self.execute_command(current_tile.get_actor(0).update(coord(x, y)))
         self.reset_tiles()

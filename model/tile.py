@@ -22,3 +22,6 @@ class Tile:
 
     def reset(self):
         self.used = False
+
+    def get_coordinate(self):
+        return self.coordinate
