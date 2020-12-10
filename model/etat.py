@@ -3,6 +3,7 @@ from model.actor_factory import Actor_Factory as Factory
 import model.actor as Actor
 from model.coord import Coord as coord
 from model.tile import Tile as tile
+from model.pathfinder import Pathfinder as Pathfinder
 
 WIDTH = 16
 HEIGHT = 9
@@ -24,6 +25,8 @@ class Etat:
         self.loose = False
         self.build_maze()
         self.invalid_positions_dictionary = self.invalid_positions()
+        self.pathfinder = Pathfinder(self.grid, self.invalid_positions_dictionary)
+
 
     def add_actor(self, actor, coordinate):
         self.grid[coordinate.get_y()][coordinate.get_x()].set_actor(actor)
@@ -57,9 +60,9 @@ class Etat:
                     if self.tile_occupied(coord(x, y)):
                         if current_tile.get_actor(0).get_type() == ZOMBIE:
                             if tick % ZOMBIE_DIFFICULTY == 0:
+                                path = self.pathfinder.find_path(coord(x, y),self.player_coordinate)
                                 self.execute_command(
-                                    current_tile.get_actor(0).update(coord(x, y), self.player_coordinate, self.grid,
-                                                                     self.invalid_positions_dictionary))
+                                    current_tile.get_actor(0).update(coord(x, y), path))
                             else:
                                 pass
                         elif current_tile.get_actor(0).get_type() == PLAYER:

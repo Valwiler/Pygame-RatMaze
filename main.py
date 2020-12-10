@@ -1,5 +1,7 @@
 import pygame
 import model.game as g
+import cProfile
+
 
 
 def main():
@@ -11,4 +13,4 @@ def main():
 
 
 if __name__ == '__main__':
-    exit(main())
+   exit(main())

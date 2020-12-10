@@ -20,4 +20,5 @@ class Coord:
         return self.x
 
     def get_y(self):
+
         return self.y

@@ -82,8 +82,7 @@ class Zombie(Actor):
         self.sprite = self.sprites[0]
         # self.sprite = pygame.transform.scale((pygame.image.load("./sprites/zombie.png")), (SPRITE_SIZE, SPRITE_SIZE))
 
-    def update(self, position, player_position, maze, invalid_positions_dictionary):
-        new_position = pf.find_path( position, player_position, maze, invalid_positions_dictionary)
+    def update(self, position, new_position):
         return command(self, position, [new_position])
 
 
