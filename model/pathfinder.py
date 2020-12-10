@@ -28,7 +28,7 @@ class Pathfinder:
     # def __cmp__(self, other):
     #     return self.h < other.h
     @staticmethod
-    def same_cohordiante_tile(coordinate_a, coordinate_b):
+    def same_coordinate(coordinate_a, coordinate_b):
         return (coordinate_a.get_x() == coordinate_b.get_x()) and \
                (coordinate_a.get_y() == coordinate_b.get_y())
 
@@ -76,30 +76,26 @@ class Pathfinder:
         open_ways = set()
         open_heap = []
         closed_ways = set()
-        open_ways.add(current_tile)
+        open_ways.add(current_tile.get_coordinate().get_coord_tuple())
         open_heap.append((0, current_tile))
+        i = 0
         while open_ways:
+            i += 1
+            print("iter" + str(i))
             current_tile = heapq.heappop(open_heap)[1]
-            if self.same_cohordiante_tile(current_tile.get_coordinate(), goal_tile.get_coordinate()):
+            print(current_tile.get_coordinate().get_srt_coord())
+            if self.same_coordinate(current_tile.get_coordinate(), goal_tile.get_coordinate()):
                 parent_tile = current_tile.parent
                 while parent_tile.parent is not None:
                     parent_tile = parent_tile.parent
                 return parent_tile.coordinate  # return le path trouve
-            open_ways.remove(current_tile)
-            closed_ways.add(current_tile)
+            open_ways.remove(current_tile.get_coordinate().get_coord_tuple())
+            closed_ways.add(current_tile.get_coordinate().get_coord_tuple())
             adj_tiles = self.adjacent_tiles(current_tile)
             for tile in adj_tiles:
-                if tile not in closed_ways:
+                if tile.get_coordinate().get_coord_tuple() not in closed_ways:
                     tile.h = self.manhattan_distance(tile, goal_tile)
-                    if tile not in open_ways:
-                        open_ways.add(tile)
+                    if tile.get_coordinate().get_coord_tuple() not in open_ways:
+                        open_ways.add(tile.get_coordinate().get_coord_tuple())
                         heapq.heappush(open_heap, (tile.h, tile))
                 tile.parent = current_tile
-
-# def further_to_player(self, position_focused, next_position, player_position):
-#     objective_x, objective_y = player_position.get_x(), player_position.get_y()
-#     focus_x, focus_y = position_focused.get_x(), position_focused.get_y()
-#     compared_x, compared_y = next_position.get_x(), next_position.get_y()
-#     focused_distance = math.sqrt((focus_x - objective_x) ** 2 + (focus_y - objective_y) ** 2)
-#     compared_distance = math.sqrt((compared_x - objective_x) ** 2 + (compared_y - objective_y) ** 2)
-#     return focused_distance > compared_distance
