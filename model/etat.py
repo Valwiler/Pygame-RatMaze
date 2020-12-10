@@ -24,6 +24,7 @@ class Etat:
         self.player_coordinate = None
         self.win = False
         self.loose = False
+        self.tile_changed = list()
         self.build_maze()
         self.invalid_positions_dictionary = self.invalid_positions()
         self.pathfinder = Pathfinder(self.grid, self.invalid_positions_dictionary)
@@ -38,6 +39,10 @@ class Etat:
             occupied = True
         return occupied
 
+    def get_map_diff(self):
+        return self.tile_changed
+
+
     def get_tile(self, coordinate):
         return self.grid[coordinate.get_y()][coordinate.get_x()]
 
@@ -48,6 +53,8 @@ class Etat:
         self.grid[coord2.get_y()][coord2.get_x()].set_actor(self.grid[coord1.get_y()][coord1.get_x()].get_actor(0))
         self.grid[coord1.get_y()][coord1.get_x()].empty_tile()
         self.grid[coord2.get_y()][coord2.get_x()].set_used()
+        self.tile_changed.append(coord1)
+        self.tile_changed.append(coord2)
         if actor_type == PLAYER:
             self.player_coordinate = coord2
 

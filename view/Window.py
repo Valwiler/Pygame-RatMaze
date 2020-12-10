@@ -29,12 +29,14 @@ class Window:
 
 
     def update_icons(self, etat):
-        grid = etat.get_grid()
-        for y, row in enumerate(grid):
-            for x, col in enumerate(row):
-                # if etat.get_tile(coord(x, y)).is_used() is True:
-                actor = etat.get_tile(coord(x, y)).get_actor(0)
-                img = actor.get_sprite()
-                self.ecran.blit(img, (x * self.actors_icons_size, y * self.actors_icons_size))
+        tiles_changed = etat.get_map_diff()
+        self.glass_pane.
+        for tile in tiles_changed:
+            x, y = tile.get_coordinate()
+
+            # if etat.get_tile(coord(x, y)).is_used() is True:
+            actor = tile.get_actor(0)
+            img = actor.get_sprite()
+            self.glass_pane.blit(img, (x * self.actors_icons_size, y * self.actors_icons_size))
 
         pg.display.update()
