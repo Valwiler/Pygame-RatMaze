@@ -7,7 +7,7 @@ class Window:
     def __init__(self, width, height, actors_icons_size):
         self.ecran = pg.display.set_mode((width, height - actors_icons_size))
         self.actors_icons_size = actors_icons_size
-        self.glass_pane = pg.Surface((width, height))
+        self.glass_pane = pg.Surface((width, height), flags=pg.SRCALPHA)
 
     def initialise_game(self, etat):
         grid = etat.get_grid()
@@ -29,8 +29,9 @@ class Window:
 
 
     def update_icons(self, etat):
+        empty = (0,0,0,0)
         tiles_changed = etat.get_map_diff()
-        self.glass_pane.
+        self.glass_pane.fill(empty)
         for tile in tiles_changed:
             x, y = tile.get_coordinate()
 
@@ -38,5 +39,5 @@ class Window:
             actor = tile.get_actor(0)
             img = actor.get_sprite()
             self.glass_pane.blit(img, (x * self.actors_icons_size, y * self.actors_icons_size))
-
+        etat.clear_map_diff()
         pg.display.update()

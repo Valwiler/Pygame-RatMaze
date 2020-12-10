@@ -42,6 +42,8 @@ class Etat:
     def get_map_diff(self):
         return self.tile_changed
 
+    def clear_map_diff(self):
+        self.tile_changed.clear()
 
     def get_tile(self, coordinate):
         return self.grid[coordinate.get_y()][coordinate.get_x()]
