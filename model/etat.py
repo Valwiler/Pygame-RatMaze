@@ -1,7 +1,8 @@
 import random as rand
 from model.actor_factory import Actor_Factory as Factory
 import model.actor as Actor
-from model.coord import Coord as coord
+from model.command import Command
+from model.coord import Coord as coord, Coord
 from model.tile import Tile as tile
 from model.pathfinder import Pathfinder as Pathfinder
 
@@ -60,9 +61,8 @@ class Etat:
                     if self.tile_occupied(coord(x, y)):
                         if current_tile.get_actor(0).get_type() == ZOMBIE:
                             if tick % ZOMBIE_DIFFICULTY == 0:
-                                path = self.pathfinder.find_path(coord(x, y),self.player_coordinate)
-                                self.execute_command(
-                                    current_tile.get_actor(0).update(coord(x, y), path))
+                                new_coord = self.pathfinder.find_path(coord(x, y),self.player_coordinate)
+                                self.execute_command(Command(current_tile.get_actor(0),coord(x,y),new_coord))
                             else:
                                 pass
                         elif current_tile.get_actor(0).get_type() == PLAYER:

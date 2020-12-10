@@ -6,6 +6,9 @@ class Coord:
     def get_coord(self):
         return self.x, self.y
 
+    def get_coord_tuple(self):
+        return (self.x, self.y)
+
     def set_coord(self, x, y):
         self.x = x
         self.y = y
@@ -22,3 +25,6 @@ class Coord:
     def get_y(self):
 
         return self.y
+
+    def get_srt_coord(self):
+        return "X: " + str(self.x) + " Y: " + str(self.y)
