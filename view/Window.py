@@ -1,6 +1,9 @@
+from operator import mod
+
 import pygame as pg
 from model.coord import Coord as coord
 
+# todo gestion des sprites et correction de syntaxe (if else imbrique)
 
 class Window:
 
@@ -11,33 +14,44 @@ class Window:
 
     def initialise_game(self, etat):
         grid = etat.get_grid()
-        actor = None
-        plancher = None
+
+        # image1, image2 = None
         for y, row in enumerate(grid):
             for x, col in enumerate(row):
+                actor = None
+                plancher = None
                 current_tile = etat.get_tile(coord(x, y))
                 if len(current_tile.actors) > 1:
                     plancher = current_tile.get_actor(1)
                     actor = current_tile.get_actor(0)
                 else:
                     plancher = current_tile.get_actor(0)
+                print(str(current_tile.get_actor(0).get_type()))
                 image1 = plancher.get_sprite()
                 self.ecran.blit(image1, (x * self.actors_icons_size, y * self.actors_icons_size))
                 if actor is not None:
-                    image2 = actor.get_sprite()
-                    self.glass_pane.blit(image2, (x * self.actors_icons_size, y * self.actors_icons_size))
+                    if actor.get_type() == 1 or actor.get_type() == 4:
+                        image2 = actor.get_sprite()
+                        self.ecran.blit(image2, (x * self.actors_icons_size, y * self.actors_icons_size))
+                    else:
+                        image2 = actor.get_sprite()[0]
+                        self.glass_pane.blit(image2, (x * self.actors_icons_size, y * self.actors_icons_size))
+                        self.ecran.blit(self.glass_pane, (0, 0))
 
+    def update_icons(self, etat, counter):
 
-    def update_icons(self, etat):
-        empty = (0,0,0,0)
-        tiles_changed = etat.get_map_diff()
-        self.glass_pane.fill(empty)
-        for tile in tiles_changed:
-            x, y = tile.get_coordinate()
+        changed_coords = etat.get_map_diff()
 
-            # if etat.get_tile(coord(x, y)).is_used() is True:
-            actor = tile.get_actor(0)
-            img = actor.get_sprite()
+        for changed_coord in changed_coords:
+            x, y = changed_coord.get_x(), changed_coord.get_y()
+            actor = etat.get_tile(changed_coord).get_actor(0)
+            if actor.get_type() == 2 or actor.get_type() == 3:
+                sprite_id = counter % 3
+                img = actor.get_sprite()[sprite_id]
+            else:
+                img = actor.get_sprite()
             self.glass_pane.blit(img, (x * self.actors_icons_size, y * self.actors_icons_size))
+            self.ecran.blit(self.glass_pane, (0, 0))
+
         etat.clear_map_diff()
         pg.display.update()
