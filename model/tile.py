@@ -1,17 +1,18 @@
 class Tile:
     def __init__(self, coordinate):
         self.coordinate = coordinate
-        self.actors = list()
-        self.used = False
 
-    def is_used(self):
-        return self.used
+    def get_coordinate(self):
+        return self.coordinate
+
+
+class Tile_Game(Tile):
+    def __init__(self, coordinate):
+        super(coordinate, self).__init__()
+        self.actors = list()
 
     def get_actor(self, index):
         return self.actors[index]
-
-    def set_used(self):
-        self.used = True
 
     def set_actor(self, actor):
         self.actors.insert(0, actor)
@@ -20,11 +21,15 @@ class Tile:
         if len(self.actors) > 1:
             self.actors.pop(0)
 
-    def reset(self):
-        self.used = False
 
-    def get_coord_single(self):
-        return self.coordinate[0], self.coordinate[1]
+class Tile_Pathfinding(Tile):
+    def __init__(self, coordinate, parent=None, h=0):
+        super(coordinate, self).__init__()
+        self.parent = parent
+        self.h = h  # distance of tile to end
 
-    def get_coordinate(self):
-        return self.coordinate
+    def get_h(self):
+        return self.h
+
+    def __lt__(self, other):
+        return self.h < other.h
