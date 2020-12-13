@@ -1,7 +1,9 @@
 from operator import mod
-
+import model.actor as ac
+from model import etat as et
 import pygame as pg
-from model.coord import Coord as coord
+from model.coord import Coord as coord, Coord
+
 
 # todo gestion des sprites et correction de syntaxe (if else imbrique)
 
@@ -26,30 +28,27 @@ class Window:
                     actor = current_tile.get_actor(0)
                 else:
                     plancher = current_tile.get_actor(0)
-                print(str(current_tile.get_actor(0).get_type()))
+                #print(str(current_tile.get_actor(0).get_type()))
                 image1 = plancher.get_sprite()
                 self.ecran.blit(image1, (x * self.actors_icons_size, y * self.actors_icons_size))
                 if actor is not None:
-                    if actor.get_type() == 1 or actor.get_type() == 4:
+                    if isinstance(actor, ac.Cheese) or isinstance(actor, ac.Wall) :
                         image2 = actor.get_sprite()
                         self.ecran.blit(image2, (x * self.actors_icons_size, y * self.actors_icons_size))
                     else:
-                        image2 = actor.get_sprite()[0]
+                        image2 = actor.get_sprite()
                         self.glass_pane.blit(image2, (x * self.actors_icons_size, y * self.actors_icons_size))
                         self.ecran.blit(self.glass_pane, (0, 0))
 
-    def update_icons(self, etat, counter):
+    def update_icons(self, etat):
 
         changed_coords = etat.get_map_diff()
 
         for changed_coord in changed_coords:
-            x, y = changed_coord.get_x(), changed_coord.get_y()
-            actor = etat.get_tile(changed_coord).get_actor(0)
-            if actor.get_type() == 2 or actor.get_type() == 3:
-                sprite_id = counter % 3
-                img = actor.get_sprite()[sprite_id]
-            else:
-                img = actor.get_sprite()
+            # x, y = changed_coord.get_x(), changed_coord.get_y()
+            x, y = changed_coord[0], changed_coord[1]
+            actor = etat.get_tile(Coord(x,y)).get_actor(0)
+            img = actor.get_sprite()
             self.glass_pane.blit(img, (x * self.actors_icons_size, y * self.actors_icons_size))
             self.ecran.blit(self.glass_pane, (0, 0))
 

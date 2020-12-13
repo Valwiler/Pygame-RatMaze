@@ -3,7 +3,6 @@ import model.game as g
 import cProfile
 
 
-
 def main():
     pygame.init()
     pygame.display.set_caption('Laborat')
@@ -13,4 +12,4 @@ def main():
 
 
 if __name__ == '__main__':
-   exit(main())
+    exit(main())
