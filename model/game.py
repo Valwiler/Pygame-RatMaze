@@ -32,9 +32,12 @@ class Game:
         game_listener = gl()
         self.window.initialise_game(self.etat)
         while self.etat.loose is False and self.etat.win is False:
-            self.window.update_icons(self.etat , number_of_tick)
+            self.window.update_icons(self.etat)
             self.etat.update_grid(number_of_tick, game_listener)
             self.clock.tick(FR)
             number_of_tick += 1
+            print(number_of_tick)
         self.window.update_icons(self.etat)
+        print(self.etat.win)
+        print(self.etat.loose)
         time.sleep(3)

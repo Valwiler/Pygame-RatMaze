@@ -1,28 +1,20 @@
 import pygame
-import model.etat as etat
+import abc
 
 SPRITE_SIZE = 64
 TOP_MARGIN = 5
-UP = 0
-RIGHT = 1
-DOWN = 2
-LEFT = 3
+NUMBER_OF_DIRECTIONS = 4
+NUMBER_OF_ANIMATIONS = 3
+
 
 # TODO bouger les updates de
 
 class Actor(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.type = None
         self.sprite = None
-        # self.direction = 0
 
-    def get_type(self):
-        return self.type
-
-    # def update(self, position):
-    #     return command(self, position, position)
-
+    @abc.abstractmethod
     def get_sprite(self):
         return self.sprite
 
@@ -45,51 +37,62 @@ class Actor(pygame.sprite.Sprite):
 class Player(Actor):
     def __init__(self):
         super(Player, self).__init__()
-        self.type = etat.PLAYER
-        self.sprites = self.extract_sprites(4, 3, "./sprites/laborat.png")
-        self.sprite = self.sprites[0][0]
+        self.sprites = self.extract_sprites(NUMBER_OF_DIRECTIONS, NUMBER_OF_ANIMATIONS, "./sprites/laborat.png")
+        self.sprite_counter = 0
+        self.sprite = self.sprites[0][self.sprite_counter]
 
-    def update_sprite(self, new_direction, animation):
-        self.sprite = self.sprites[new_direction][animation]
+    def update_sprite(self, new_direction):
+        self.sprite = self.sprites[new_direction][self.increase_counter()]
 
+    def get_sprite(self):
+        return self.sprite
+
+
+    def increase_counter(self):
+        self.sprite_counter += 1
+        return self.sprite_counter % 3
 
 class Zombie(Actor):
     def __init__(self):
         super(Zombie, self).__init__()
-        self.type = etat.ZOMBIE
-        self.sprites = self.extract_sprites(4, 3, "./sprites/zombie.png")
-        self.sprite = self.sprites[0][0]
+        self.sprites = self.extract_sprites(NUMBER_OF_DIRECTIONS, NUMBER_OF_ANIMATIONS, "./sprites/zombie.png")
+        self.sprite_counter = 0
+        self.sprite = self.sprites[0][self.sprite_counter]
 
-    # TODO prend la direction de la commnande et le nombre de tick pour set la sprite
-    #
-    # def set_direction(self, new_direction, animation):
-    #     self.sprite = self.sprites[new_direction][animation]
+    def update_sprite(self, new_direction):
+        self.sprite = self.sprites[0][self.increase_counter()]
 
-    # def update(self, position, new_position):
-    #     self.update_sprite()
-    #     return command(self, position, [new_position])
-    def update_sprite(self, new_direction, animation):
-        self.sprite = self.sprites[new_direction][animation]
+    def get_sprite(self):
+        return self.sprite
 
+    def increase_counter(self):
+        self.sprite_counter += 1
+        return self.sprite_counter % 3
 
 class Wall(Actor):
     def __init__(self):
-        super(Wall, self)
-        self.type = etat.WALL
+        super(Wall, self).__init__()
         self.sprite = pygame.transform.scale((pygame.image.load("./sprites/mur_brique.png")),
                                              (SPRITE_SIZE, SPRITE_SIZE))
 
+    def get_sprite(self):
+        return self.sprite
 
-class Fromage(Actor):
+
+class Cheese(Actor):
     def __init__(self):
-        super(Fromage, self)
-        self.type = etat.CHEESE
+        super(Cheese, self).__init__()
         self.sprite = pygame.transform.scale((pygame.image.load("./sprites/fromage.png")), (SPRITE_SIZE, SPRITE_SIZE))
 
+    def get_sprite(self):
+        return self.sprite
 
-class Tuile_Plancher(Actor):
+
+class Floor(Actor):
     def __init__(self):
-        super(Tuile_Plancher, self)
-        self.type = etat.FLOOR
+        super(Floor, self)
         self.sprite = pygame.transform.scale((pygame.image.load("./sprites/texture_pierre.png")),
                                              (SPRITE_SIZE, SPRITE_SIZE))
+
+    def get_sprite(self):
+        return self.sprite

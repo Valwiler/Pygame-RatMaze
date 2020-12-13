@@ -19,5 +19,5 @@ class Coord:
     def get_y(self):
         return self.y
 
-    # def get_srt_coord(self):
-    #     return "X: " + str(self.x) + " Y: " + str(self.y)
+    def is_same_coordinate(self, other):
+        return self.x == other.get_x() and self.y == other.get_y()

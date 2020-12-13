@@ -1,15 +1,19 @@
 import random as rand
 from model.actor_factory import Actor_Factory as Factory
-import model.actor as Actor
+import model.actor as actor
+#from model.actor import Actor as actor
 from model.command import Command
 from model.coord import Coord as coord, Coord
-from model.tile import Tile as tile
+from model.tile import Tile_Game as tile_game
 from model.pathfinder import Pathfinder as Pathfinder
 
 WIDTH = 16
 HEIGHT = 9
 NUMBER_OF_ZOMBIES = 3
-ZOMBIE_DIFFICULTY = 10
+ZOMBIE_DIFFICULTY = 1
+
+FOCUSED_ACTOR = 0
+NON_MOVING_ACT0RS_ID = 2
 
 FLOOR = 0
 WALL = 1
@@ -18,9 +22,51 @@ ZOMBIE = 3
 PLAYER = 4
 
 
+def is_wall(target_actor):
+    return isinstance(target_actor, actor.Wall)
+
+
+def is_floor(target_actor):
+    return isinstance(target_actor, actor.Floor)
+
+
+def is_zombie(target_actor):
+    return isinstance(target_actor, actor.Zombie)
+
+
+def is_cheese(target_actor):
+    return isinstance(target_actor, actor.Cheese)
+
+
+def is_player(target_actor):
+    return isinstance(target_actor, actor.Player)
+
+
+def get_player_input(coordinate, game_listener):
+    pressed_up, pressed_down, pressed_left, pressed_right = game_listener.get_input()
+    new_coordinate = Coord(coordinate.get_x(), coordinate.get_y())
+    if pressed_left:
+        new_coordinate.set_x(coordinate.get_x() - 1)
+    if pressed_right:
+        new_coordinate.set_x(coordinate.get_x() + 1)
+    if pressed_up:
+        new_coordinate.set_y(coordinate.get_y() - 1)
+    if pressed_down:
+        new_coordinate.set_y(coordinate.get_y() + 1)
+    return new_coordinate
+
+
+def is_tile_containing_moving_actor(current_actor):
+    return is_player(current_actor) or is_zombie(current_actor)
+
+
+def can_zombie_moove(tick):
+    return tick % ZOMBIE_DIFFICULTY is 0
+
+
 class Etat:
     def __init__(self):
-        self.grid = [[tile(coord(x, y)) for x in range(WIDTH)] for y in range(HEIGHT)]
+        self.grid = [[tile_game(coord(x, y)) for x in range(WIDTH)] for y in range(HEIGHT)]
         # todo remplacer par un pointeur vers playeur deirectement
         self.player_coordinate = None
         self.win = False
@@ -33,12 +79,6 @@ class Etat:
     def add_actor(self, actor, coordinate):
         self.grid[coordinate.get_y()][coordinate.get_x()].set_actor(actor)
 
-    def tile_occupied(self, coordinate):
-        occupied = False
-        if not isinstance(self.grid[coordinate.get_y()][coordinate.get_x()].get_actor(0), Actor.Tuile_Plancher):
-            occupied = True
-        return occupied
-
     def get_map_diff(self):
         return self.tile_changed
 
@@ -48,43 +88,17 @@ class Etat:
     def get_tile(self, coordinate):
         return self.grid[coordinate.get_y()][coordinate.get_x()]
 
-    def get_tile_type(self, coordinate):
-        return self.grid[coordinate.get_y()][coordinate.get_x()].get_type()
-
-    def move_actor(self, coord1, coord2, actor_type):
-        self.grid[coord2.get_y()][coord2.get_x()].set_actor(self.grid[coord1.get_y()][coord1.get_x()].get_actor(0))
-        self.grid[coord1.get_y()][coord1.get_x()].empty_tile()
-        # self.grid[coord2.get_y()][coord2.get_x()].set_used()
-        self.tile_changed.append(coord1)
-        self.tile_changed.append(coord2)
-        if actor_type == PLAYER:
-            self.player_coordinate = coord2
+    def move_actor(self, old_coordinate, new_coordinate, actor):
+        self.grid[new_coordinate.get_y()][new_coordinate.get_x()].set_actor(
+            self.grid[old_coordinate.get_y()][old_coordinate.get_x()].get_actor())
+        self.grid[old_coordinate.get_y()][old_coordinate.get_x()].empty_tile()
+        self.tile_changed.add((old_coordinate.get_x(), old_coordinate.get_y()))
+        self.tile_changed.add((new_coordinate.get_x(), new_coordinate.get_y()))
+        if is_player(actor):
+            self.player_coordinate = new_coordinate
 
     def get_grid(self):
         return self.grid
-
-    def update_grid(self, tick, game_listener):
-        # TODO un set pour concerver les tiles qui on etes utilisees et plus dans la tile en elle meme
-        for y, row in enumerate(self.grid):
-            for x, current_tile in enumerate(row):
-                # if not current_tile.is_used():
-                if self.tile_occupied(coord(x, y)):
-                    if current_tile.get_actor(0).get_type() == ZOMBIE:
-                        if tick % ZOMBIE_DIFFICULTY == 0:
-                            new_coord = self.pathfinder.find_path(coord(x, y), self.player_coordinate)
-                            self.execute_command(Command(current_tile.get_actor(0), coord(x, y), [new_coord]))
-                        else:
-                            pass
-                    elif current_tile.get_actor(0).get_type() == PLAYER:
-                        self.execute_command(current_tile.get_actor(0).update(coord(x, y), game_listener))
-        #         executer la commande avec la nouvelle position et l'acteur
-        self.reset_tiles()
-
-    #
-    # def reset_tiles(self):
-    #     for row in self.grid:
-    #         for tile in row:
-    #             tile.reset()
 
     def build_maze(self):
         map_config = list()
@@ -98,8 +112,8 @@ class Etat:
                 new_map = list()
             else:
                 new_map.append(list(map(int, line)))
-
-        game_map = map_config[rand.randint(0, len(map_config) - 1)]
+        # game_map = map_config[rand.randint(0, len(map_config) - 1)]
+        game_map = map_config[0]
         for y, row in enumerate(game_map):
             for x, actor_type in enumerate(row):
                 a_pos = coord(x, y)
@@ -109,50 +123,64 @@ class Etat:
                 if actor_type == PLAYER:
                     self.player_coordinate = a_pos
 
-    # vicoty_loose check une fois que le path finder a verifier la case, l'etat regarde les conditions de victoires
+    def update_grid(self, tick, game_listener):
+        #self.tile_changed.clear()
+        for y, row in enumerate(self.grid):
+            for x, current_tile in enumerate(row):
+                current_coordinate = current_tile.get_coordinate()
+                if (x, y) not in self.tile_changed:
+                    current_actor = current_tile.get_actor(FOCUSED_ACTOR)
+                    if is_tile_containing_moving_actor(current_actor):
+                        new_coordinate = current_coordinate
+                        if is_zombie(current_actor):
+                            if can_zombie_moove(tick):
+                                print('tile coord  : ' + str(x) + ' ' + str(y))
+                                print("current actor : " + str(current_actor.__class__))
+                                new_coordinate = self.pathfinder.find_path(current_actor, current_coordinate,
+                                                                           self.player_coordinate)
+                        elif is_player(current_actor):
+                            new_coordinate = self.pathfinder.verify_new_position(current_actor,
+                                                                                 get_player_input(current_coordinate,
+                                                                                                  game_listener),
+                                                                                 current_coordinate)
+                        self.execute_command(Command(current_actor, current_coordinate, new_coordinate, tick))
+
     def execute_command(self, command):
-        key_coordinate = (command.target_coord.get_x(), command.target_coord.get_y())
-        if key_coordinate in self.invalid_positions_dictionary.keys():
-            pass
-        elif not self.tile_occupied(command.target_coord):
-            self.move_actor(command.start_coord, command.target_coord, command.actor.type)
-            return
-        elif command.actor.type == PLAYER:
-            if self.get_tile(command.target_coord).get_actor(0).get_type() is CHEESE:
-                self.win = True
-            elif self.get_tile(command.target_coord).get_actor(0).get_type() is ZOMBIE:
-                self.loose = True
-        elif command.actor.type == ZOMBIE:
-            if self.get_tile(command.target_coord).get_actor(0).get_type() is PLAYER:
-                self.loose = True
+        if command.start_coord != command.target_coord:
+            if is_player(command.actor):
+                self.win = self.is_player_on_cheese(command.target_coord)
+                if not self.win:
+                    self.loose = self.is_player_on_zombie(command.target_coord)
+            elif is_zombie(command.actor):
+                self.loose = self.is_zombie_on_player(command.target_coord)
+            self.move_actor(command.start_coord, command.target_coord, command.actor)
+            command.actor.update_sprite(command.direction)
+            # print("acteur " + str(command.actor.__class__))
+            # print("corodnnes " + str(command.target_coord.get_x()) + ' -- ' + str(command.target_coord.get_y()))
+            # print()
 
-    # TODO va dans etat pour verification gestion et verification du deplacement
-    def update(position, game_listener):
-        pressed_up, pressed_down, pressed_left, pressed_right = game_listener.get_input()
-        temp_position = Coord(position.get_x(), position.get_y())
-        if pressed_left:
-            temp_position.set_x(temp_position.get_x() - 1)
-        if pressed_right:
-            temp_position.set_x(temp_position.get_x() + 1)
-        if pressed_up:
-            temp_position.set_y(temp_position.get_y() - 1)
-        if pressed_down:
-            temp_position.set_y(temp_position.get_y() + 1)
-        return temp_position
 
-  # créer un dictionaire de position invalides
+    def is_player_on_cheese(self, target_coordinate):
+        return is_cheese(self.get_tile(target_coordinate).get_actor())
+
+    def is_player_on_zombie(self, target_coordinate):
+        return is_zombie(self.get_tile(target_coordinate).get_actor())
+
+    def is_zombie_on_player(self, target_coordinate):
+        return is_player(self.get_tile(target_coordinate).get_actor())
+
+    # créer un dictionaire de position invalides
     def invalid_positions(self):
         invalid_positions_dictionary = {}
-        for y in range(-1, HEIGHT, 1):
+        for y in range(-2, HEIGHT + 1, 1):
             invalid_positions_dictionary[(WIDTH, y)] = False
             invalid_positions_dictionary[(-1, y)] = False
-        for x in range(-1, WIDTH, 1):
+        for x in range(-2, WIDTH + 1, 1):
             invalid_positions_dictionary[(x, -1)] = False
             invalid_positions_dictionary[(x, HEIGHT)] = False
 
         for y, row in enumerate(self.grid):
             for x, current_tile in enumerate(row):
-                if self.tile_occupied(coord(x, y)):
-                    if current_tile.get_actor(0).get_type() == WALL:
-                        invalid_positions_dictionary[(x, y)] = False
+                if is_wall(self.grid[y][x].get_actor()):
+                    invalid_positions_dictionary[(x, y)] = False
         return invalid_positions_dictionary

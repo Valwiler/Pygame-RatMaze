@@ -8,10 +8,10 @@ class Tile:
 
 class Tile_Game(Tile):
     def __init__(self, coordinate):
-        super(coordinate, self).__init__()
+        super(Tile_Game, self).__init__(coordinate)
         self.actors = list()
 
-    def get_actor(self, index):
+    def get_actor(self, index=0):
         return self.actors[index]
 
     def set_actor(self, actor):
@@ -24,7 +24,7 @@ class Tile_Game(Tile):
 
 class Tile_Pathfinding(Tile):
     def __init__(self, coordinate, parent=None, h=0):
-        super(coordinate, self).__init__()
+        super(Tile_Pathfinding, self).__init__(coordinate)
         self.parent = parent
         self.h = h  # distance of tile to end
 
