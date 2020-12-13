@@ -1,6 +1,8 @@
 import pygame
 import abc
 
+
+
 SPRITE_SIZE = 64
 TOP_MARGIN = 5
 NUMBER_OF_DIRECTIONS = 4
@@ -13,6 +15,7 @@ class Actor(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.sprite = None
+        self.direction = 0
 
     @abc.abstractmethod
     def get_sprite(self):
@@ -28,7 +31,7 @@ class Actor(pygame.sprite.Sprite):
                 new_sprite_y = column * SPRITE_SIZE
                 sprite = pygame.Surface([SPRITE_SIZE, SPRITE_SIZE]).convert()
                 sprite.set_colorkey((0, 0, 0), 0)
-                sprite.blit(sprite_sheet, (0, 0), (new_sprite_x, new_sprite_y, SPRITE_SIZE, SPRITE_SIZE))
+                sprite.blit(sprite_sheet, (0, 0), (new_sprite_y, new_sprite_x , SPRITE_SIZE, SPRITE_SIZE))
                 new_sprites_direction.append(sprite)
             sprites_list.append(new_sprites_direction)
         return sprites_list
@@ -41,7 +44,7 @@ class Player(Actor):
         self.sprite_counter = 0
         self.sprite = self.sprites[0][self.sprite_counter]
 
-    def update_sprite(self, new_direction):
+    def update_sprite(self, new_direction=0):
         self.sprite = self.sprites[new_direction][self.increase_counter()]
 
     def get_sprite(self):
@@ -59,11 +62,12 @@ class Zombie(Actor):
         self.sprite_counter = 0
         self.sprite = self.sprites[0][self.sprite_counter]
 
-    def update_sprite(self, new_direction):
-        self.sprite = self.sprites[0][self.increase_counter()]
+    def update_sprite(self, new_direction=0):
+        self.sprite = self.sprites[new_direction][self.increase_counter()]
 
     def get_sprite(self):
         return self.sprite
+
 
     def increase_counter(self):
         self.sprite_counter += 1

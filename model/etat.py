@@ -10,7 +10,8 @@ from model.pathfinder import Pathfinder as Pathfinder
 WIDTH = 16
 HEIGHT = 9
 NUMBER_OF_ZOMBIES = 3
-ZOMBIE_DIFFICULTY = 1
+ZOMBIE_DIFFICULTY = 150
+PLAYER_SPEED = 5
 
 FOCUSED_ACTOR = 0
 NON_MOVING_ACT0RS_ID = 2
@@ -60,15 +61,17 @@ def is_tile_containing_moving_actor(current_actor):
     return is_player(current_actor) or is_zombie(current_actor)
 
 
-def can_zombie_moove(tick):
+def can_zombie_move(tick):
     return tick % ZOMBIE_DIFFICULTY is 0
 
-
+def can_player_move(tick):
+    return tick % PLAYER_SPEED is 0
 class Etat:
     def __init__(self):
         self.grid = [[tile_game(coord(x, y)) for x in range(WIDTH)] for y in range(HEIGHT)]
         # todo remplacer par un pointeur vers playeur deirectement
         self.player_coordinate = None
+        self.player = None
         self.win = False
         self.loose = False
         self.tile_changed = set()
@@ -121,6 +124,7 @@ class Etat:
                     self.add_actor(Factory.create_actor(FLOOR), a_pos)
                 self.add_actor(Factory.create_actor(actor_type), a_pos)
                 if actor_type == PLAYER:
+                    self.player = self.get_tile(a_pos).get_actor()
                     self.player_coordinate = a_pos
 
     def update_grid(self, tick, game_listener):
@@ -133,13 +137,14 @@ class Etat:
                     if is_tile_containing_moving_actor(current_actor):
                         new_coordinate = current_coordinate
                         if is_zombie(current_actor):
-                            if can_zombie_moove(tick):
+                            if can_zombie_move(tick):
                                 print('tile coord  : ' + str(x) + ' ' + str(y))
                                 print("current actor : " + str(current_actor.__class__))
                                 new_coordinate = self.pathfinder.find_path(current_actor, current_coordinate,
                                                                            self.player_coordinate)
                         elif is_player(current_actor):
-                            new_coordinate = self.pathfinder.verify_new_position(current_actor,
+                            if can_player_move(tick):
+                                new_coordinate = self.pathfinder.verify_new_position(current_actor,
                                                                                  get_player_input(current_coordinate,
                                                                                                   game_listener),
                                                                                  current_coordinate)

@@ -17,7 +17,6 @@ class Window:
     def initialise_game(self, etat):
         grid = etat.get_grid()
 
-        # image1, image2 = None
         for y, row in enumerate(grid):
             for x, col in enumerate(row):
                 actor = None
@@ -45,7 +44,6 @@ class Window:
         changed_coords = etat.get_map_diff()
 
         for changed_coord in changed_coords:
-            # x, y = changed_coord.get_x(), changed_coord.get_y()
             x, y = changed_coord[0], changed_coord[1]
             actor = etat.get_tile(Coord(x,y)).get_actor(0)
             img = actor.get_sprite()

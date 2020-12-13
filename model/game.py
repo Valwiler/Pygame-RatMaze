@@ -7,7 +7,7 @@ from model.etat import Etat as Etat
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 640
 ACTORS_ICON_SIZE = 64
-FR = 20
+FR = 60
 
 NUMBER_OF_ACTORS = 5
 LABORAT_ID = 0
