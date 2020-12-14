@@ -7,10 +7,9 @@ from model.etat import Etat as Etat
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 640
 ACTORS_ICON_SIZE = 64
-FR = 60
+FR = 12
 
 NUMBER_OF_ACTORS = 5
-LABORAT_ID = 0
 
 COORDINATE_X = 0
 COORDINATE_Y = 1
@@ -36,8 +35,5 @@ class Game:
             self.etat.update_grid(number_of_tick, game_listener)
             self.clock.tick(FR)
             number_of_tick += 1
-            print(number_of_tick)
         self.window.update_icons(self.etat)
-        print(self.etat.win)
-        print(self.etat.loose)
         time.sleep(3)

@@ -1,7 +1,6 @@
 import random as rand
 from model.actor_factory import Actor_Factory as Factory
 import model.actor as actor
-#from model.actor import Actor as actor
 from model.command import Command
 from model.coord import Coord as coord, Coord
 from model.tile import Tile_Game as tile_game
@@ -10,11 +9,9 @@ from model.pathfinder import Pathfinder as Pathfinder
 WIDTH = 16
 HEIGHT = 9
 NUMBER_OF_ZOMBIES = 3
-ZOMBIE_DIFFICULTY = 150
-PLAYER_SPEED = 5
+ZOMBIE_DIFFICULTY = 4
 
 FOCUSED_ACTOR = 0
-NON_MOVING_ACT0RS_ID = 2
 
 FLOOR = 0
 WALL = 1
@@ -64,12 +61,10 @@ def is_tile_containing_moving_actor(current_actor):
 def can_zombie_move(tick):
     return tick % ZOMBIE_DIFFICULTY is 0
 
-def can_player_move(tick):
-    return tick % PLAYER_SPEED is 0
+
 class Etat:
     def __init__(self):
         self.grid = [[tile_game(coord(x, y)) for x in range(WIDTH)] for y in range(HEIGHT)]
-        # todo remplacer par un pointeur vers playeur deirectement
         self.player_coordinate = None
         self.player = None
         self.win = False
@@ -85,19 +80,16 @@ class Etat:
     def get_map_diff(self):
         return self.tile_changed
 
-    def clear_map_diff(self):
-        self.tile_changed.clear()
-
     def get_tile(self, coordinate):
         return self.grid[coordinate.get_y()][coordinate.get_x()]
 
-    def move_actor(self, old_coordinate, new_coordinate, actor):
+    def move_actor(self, old_coordinate, new_coordinate, current_actor):
         self.grid[new_coordinate.get_y()][new_coordinate.get_x()].set_actor(
             self.grid[old_coordinate.get_y()][old_coordinate.get_x()].get_actor())
         self.grid[old_coordinate.get_y()][old_coordinate.get_x()].empty_tile()
         self.tile_changed.add((old_coordinate.get_x(), old_coordinate.get_y()))
         self.tile_changed.add((new_coordinate.get_x(), new_coordinate.get_y()))
-        if is_player(actor):
+        if is_player(current_actor):
             self.player_coordinate = new_coordinate
 
     def get_grid(self):
@@ -115,8 +107,7 @@ class Etat:
                 new_map = list()
             else:
                 new_map.append(list(map(int, line)))
-        # game_map = map_config[rand.randint(0, len(map_config) - 1)]
-        game_map = map_config[0]
+        game_map = map_config[rand.randint(0, len(map_config) - 1)]
         for y, row in enumerate(game_map):
             for x, actor_type in enumerate(row):
                 a_pos = coord(x, y)
@@ -128,9 +119,11 @@ class Etat:
                     self.player_coordinate = a_pos
 
     def update_grid(self, tick, game_listener):
-        #self.tile_changed.clear()
+        self.tile_changed.clear()
         for y, row in enumerate(self.grid):
             for x, current_tile in enumerate(row):
+                if self.loose or self.win:
+                    break
                 current_coordinate = current_tile.get_coordinate()
                 if (x, y) not in self.tile_changed:
                     current_actor = current_tile.get_actor(FOCUSED_ACTOR)
@@ -138,32 +131,25 @@ class Etat:
                         new_coordinate = current_coordinate
                         if is_zombie(current_actor):
                             if can_zombie_move(tick):
-                                print('tile coord  : ' + str(x) + ' ' + str(y))
-                                print("current actor : " + str(current_actor.__class__))
                                 new_coordinate = self.pathfinder.find_path(current_actor, current_coordinate,
                                                                            self.player_coordinate)
                         elif is_player(current_actor):
-                            if can_player_move(tick):
-                                new_coordinate = self.pathfinder.verify_new_position(current_actor,
-                                                                                 get_player_input(current_coordinate,
-                                                                                                  game_listener),
+                            new_coordinate = self.pathfinder.verify_new_position(current_actor,
+                                                                                 get_player_input(
+                                                                                     current_coordinate,
+                                                                                     game_listener),
                                                                                  current_coordinate)
-                        self.execute_command(Command(current_actor, current_coordinate, new_coordinate, tick))
+                        self.execute_command(Command(current_actor, current_coordinate, new_coordinate))
 
     def execute_command(self, command):
-        if command.start_coord != command.target_coord:
-            if is_player(command.actor):
-                self.win = self.is_player_on_cheese(command.target_coord)
-                if not self.win:
-                    self.loose = self.is_player_on_zombie(command.target_coord)
-            elif is_zombie(command.actor):
-                self.loose = self.is_zombie_on_player(command.target_coord)
-            self.move_actor(command.start_coord, command.target_coord, command.actor)
-            command.actor.update_sprite(command.direction)
-            # print("acteur " + str(command.actor.__class__))
-            # print("corodnnes " + str(command.target_coord.get_x()) + ' -- ' + str(command.target_coord.get_y()))
-            # print()
-
+        if is_player(command.actor):
+            self.win = self.is_player_on_cheese(command.target_coord)
+            if not self.win:
+                self.loose = self.is_player_on_zombie(command.target_coord)
+        elif is_zombie(command.actor):
+            self.loose = self.is_zombie_on_player(command.target_coord)
+        self.move_actor(command.start_coord, command.target_coord, command.actor)
+        command.actor.update_sprite(command.direction)
 
     def is_player_on_cheese(self, target_coordinate):
         return is_cheese(self.get_tile(target_coordinate).get_actor())
@@ -174,7 +160,6 @@ class Etat:
     def is_zombie_on_player(self, target_coordinate):
         return is_player(self.get_tile(target_coordinate).get_actor())
 
-    # créer un dictionaire de position invalides
     def invalid_positions(self):
         invalid_positions_dictionary = {}
         for y in range(-2, HEIGHT + 1, 1):

@@ -1,9 +1,20 @@
 import heapq
 from model import etat as etat
 from model.tile import Tile_Pathfinding as tile_path_finding
-import model.actor as actor
-
 from model.coord import Coord
+
+
+def manhattan_distance(current_tile, goal_tile):
+    return abs((goal_tile.coordinate.x - current_tile.coordinate.x) + (
+            goal_tile.coordinate.y - current_tile.coordinate.y))
+
+
+def get_path(tile):
+    if tile.parent.parent is not None:
+        tile = tile.parent
+        while tile.parent.parent is not None:
+            tile = tile.parent
+    return tile.get_coordinate()
 
 
 class Pathfinder:
@@ -22,11 +33,6 @@ class Pathfinder:
             else:
                 return True
 
-    @staticmethod
-    def manhattan_distance(current_tile, goal_tile):
-        return abs((goal_tile.coordinate.x - current_tile.coordinate.x) + (
-                goal_tile.coordinate.y - current_tile.coordinate.y))
-
     def adjacent_tiles(self, zombie, current_tile):
         current_x = current_tile.coordinate.x
         current_y = current_tile.coordinate.y
@@ -34,12 +40,8 @@ class Pathfinder:
         viable_positions = list()
         possible_positions.append(tile_path_finding(Coord(current_x, current_y - 1)))
         possible_positions.append(tile_path_finding(Coord(current_x, current_y + 1)))
-        possible_positions.append(tile_path_finding(Coord(current_x - 1, current_y)))
-        possible_positions.append(tile_path_finding(Coord(current_x - 1, current_y + 1)))
-        possible_positions.append(tile_path_finding(Coord(current_x - 1, current_y - 1)))
         possible_positions.append(tile_path_finding(Coord(current_x + 1, current_y)))
-        possible_positions.append(tile_path_finding(Coord(current_x + 1, current_y + 1)))
-        possible_positions.append(tile_path_finding(Coord(current_x + 1, current_y - 1)))
+        possible_positions.append(tile_path_finding(Coord(current_x - 1, current_y)))
         for position in possible_positions:
             if self.is_viable_position(zombie, position.get_coordinate()):
                 viable_positions.append(position)
@@ -50,13 +52,6 @@ class Pathfinder:
             return new_position
         else:
             return old_position
-
-    def get_path(self, tile):
-        if tile.parent.parent is not None:
-            tile = tile.parent
-            while tile.parent.parent is not None:
-                tile = tile.parent
-        return tile.get_coordinate()
 
     def find_path(self, zombie, starting_coordinate, goal_coordinate):
         current_tile = tile_path_finding(starting_coordinate)
@@ -70,14 +65,14 @@ class Pathfinder:
             current_tile = heapq.heappop(open_heap)[1]
             tile_coordinate = (current_tile.get_coordinate().get_x(), current_tile.get_coordinate().get_y())
             if current_tile.get_coordinate().is_same_coordinate(goal_tile.get_coordinate()):
-                return self.get_path(current_tile)  # return le path trouve
+                return get_path(current_tile)  # return le path trouve
             open_ways.remove(tile_coordinate)
             closed_ways.add(tile_coordinate)
             adj_tiles = self.adjacent_tiles(zombie, current_tile)
             for tile in adj_tiles:
                 tile_coordinate = (tile.get_coordinate().get_x(), tile.get_coordinate().get_y())
                 if tile_coordinate not in closed_ways:
-                    tile.h = self.manhattan_distance(tile, goal_tile)
+                    tile.h = manhattan_distance(tile, goal_tile)
                     if tile_coordinate not in open_ways:
                         open_ways.add(tile_coordinate)
                         heapq.heappush(open_heap, (tile.h, tile))

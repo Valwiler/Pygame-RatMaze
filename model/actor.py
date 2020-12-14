@@ -1,15 +1,27 @@
 import pygame
 import abc
 
-
-
 SPRITE_SIZE = 64
 TOP_MARGIN = 5
 NUMBER_OF_DIRECTIONS = 4
 NUMBER_OF_ANIMATIONS = 3
 
 
-# TODO bouger les updates de
+def extract_sprites(rows_number, columns_number, mutli_sprite_document_path):
+    sprite_sheet = pygame.image.load(mutli_sprite_document_path)
+    sprites_list = []
+    for row in range(rows_number):
+        new_sprites_direction = []
+        for column in range(columns_number):
+            new_sprite_x = row * SPRITE_SIZE + TOP_MARGIN
+            new_sprite_y = column * SPRITE_SIZE
+            sprite = pygame.Surface([SPRITE_SIZE, SPRITE_SIZE]).convert()
+            sprite.set_colorkey((0, 0, 0), 0)
+            sprite.blit(sprite_sheet, (0, 0), (new_sprite_y, new_sprite_x, SPRITE_SIZE, SPRITE_SIZE))
+            new_sprites_direction.append(sprite)
+        sprites_list.append(new_sprites_direction)
+    return sprites_list
+
 
 class Actor(pygame.sprite.Sprite):
     def __init__(self):
@@ -21,26 +33,11 @@ class Actor(pygame.sprite.Sprite):
     def get_sprite(self):
         return self.sprite
 
-    def extract_sprites(self, rows_number, columns_number, mutli_sprite_document_path):
-        sprite_sheet = pygame.image.load(mutli_sprite_document_path)
-        sprites_list = []
-        for row in range(rows_number):
-            new_sprites_direction = []
-            for column in range(columns_number):
-                new_sprite_x = row * SPRITE_SIZE + TOP_MARGIN
-                new_sprite_y = column * SPRITE_SIZE
-                sprite = pygame.Surface([SPRITE_SIZE, SPRITE_SIZE]).convert()
-                sprite.set_colorkey((0, 0, 0), 0)
-                sprite.blit(sprite_sheet, (0, 0), (new_sprite_y, new_sprite_x , SPRITE_SIZE, SPRITE_SIZE))
-                new_sprites_direction.append(sprite)
-            sprites_list.append(new_sprites_direction)
-        return sprites_list
-
 
 class Player(Actor):
     def __init__(self):
         super(Player, self).__init__()
-        self.sprites = self.extract_sprites(NUMBER_OF_DIRECTIONS, NUMBER_OF_ANIMATIONS, "./sprites/laborat.png")
+        self.sprites = extract_sprites(NUMBER_OF_DIRECTIONS, NUMBER_OF_ANIMATIONS, "./sprites/laborat.png")
         self.sprite_counter = 0
         self.sprite = self.sprites[0][self.sprite_counter]
 
@@ -50,15 +47,15 @@ class Player(Actor):
     def get_sprite(self):
         return self.sprite
 
-
     def increase_counter(self):
         self.sprite_counter += 1
         return self.sprite_counter % 3
+
 
 class Zombie(Actor):
     def __init__(self):
         super(Zombie, self).__init__()
-        self.sprites = self.extract_sprites(NUMBER_OF_DIRECTIONS, NUMBER_OF_ANIMATIONS, "./sprites/zombie.png")
+        self.sprites = extract_sprites(NUMBER_OF_DIRECTIONS, NUMBER_OF_ANIMATIONS, "./sprites/zombie.png")
         self.sprite_counter = 0
         self.sprite = self.sprites[0][self.sprite_counter]
 
@@ -68,10 +65,10 @@ class Zombie(Actor):
     def get_sprite(self):
         return self.sprite
 
-
     def increase_counter(self):
         self.sprite_counter += 1
         return self.sprite_counter % 3
+
 
 class Wall(Actor):
     def __init__(self):
