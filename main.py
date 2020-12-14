@@ -1,6 +1,5 @@
 import pygame
 import model.game as g
-import cProfile
 
 
 def main():

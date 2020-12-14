@@ -1,6 +1,6 @@
 import sys
-import pygame
 import os
+import pygame
 
 
 class Game_Listener:
@@ -18,8 +18,8 @@ class Game_Listener:
                 if event.key == pygame.K_ESCAPE:
                     sys.exit()
                 elif event.key == pygame.K_SPACE:
-                    # TODO restart le jeu
-                    os.execl(sys.executable, '"{}"'.format(sys.executable), *sys.argv)
+                    python = sys.executable
+                    os.execl(python, python, *sys.argv)
                 if event.key == pygame.K_LEFT:
                     self.pressed_left = True
                 elif event.key == pygame.K_RIGHT:
