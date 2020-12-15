@@ -9,7 +9,7 @@ from model.pathfinder import Pathfinder as Pathfinder
 WIDTH = 16
 HEIGHT = 9
 NUMBER_OF_ZOMBIES = 3
-ZOMBIE_DIFFICULTY = 4
+ZOMBIE_DIFFICULTY = 10
 
 FOCUSED_ACTOR = 0
 
